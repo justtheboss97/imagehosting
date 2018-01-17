@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    history
+{% endblock %}
+
+{% block main %}
+
+<table style="width:100%">
+  <tr>
+    <th>id</th>
+    <th>stock</th>
+    <th>amount</th>
+    <th>value</th>
+    <th>time</th>
+    <th>sell or buy</th>
+  </tr>
+    {% for entry in history %}
+      <tr>
+        <td>{{ entry.id }}</td>
+        <td>{{ entry.stock }}</td>
+        <td>{{ entry.amount }}</td>
+        <td>{{ entry.value }}</td>
+        <td>{{ entry.time }}</td>
+        <td>{{ entry.buysell }}</td>
+      </tr>
+    </table>
+    {% endfor %}
+
+{% endblock %}
