@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<head>Login</head>
+{% block title %}
+    Log In
+{% endblock %}
 
-<body>
+{% block main %}
     <form action="{{ url_for('login') }}" method="post">
         <fieldset>
             <div class="form-group">
@@ -16,4 +18,4 @@
             </div>
         </fieldset>
     </form>
-</body>
+{% endblock %}

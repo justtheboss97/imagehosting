@@ -29,7 +29,6 @@ Session(app)
 db = SQL("sqlite:///icarus.db")
 
 
-
 # register for the website
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -69,7 +68,8 @@ def register():
     return render_template("login.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
+
+@app.route("/")
 def login():
     """Log user in."""
 
