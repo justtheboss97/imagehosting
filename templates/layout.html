@@ -1,0 +1,31 @@
+!
+<html>
+
+    <head>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <title>Icarus</title>
+    </head>
+
+    <body>
+        <a href = "index.html"><img id="banner" src="mybannerimage.gif" alt="Banner Image"/></a>
+        <div class="container">
+            <div class="sidenav">
+              {% for groep in volgend %}
+              <a href="{{ groep.link }}">{{ groep.name }}</a>
+            </div>
+
+            <div id="main">
+
+            </div>
+        </div>
+
+
+        </div>
+
+    </body>
+
+    <footer>
+
+    </footer>
+
+</html>
