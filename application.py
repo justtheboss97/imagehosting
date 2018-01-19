@@ -70,6 +70,11 @@ def register():
 
 
 @app.route("/")
+def homepage():
+    "startpagina"
+    return render_template("peop.html")
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in."""
 
