@@ -5,6 +5,7 @@ from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from passlib.context import CryptContext
 import datetime
+from helpers import *
 
 # configure application
 app = Flask(__name__)
@@ -36,6 +37,9 @@ def register():
 
     if request.method == "POST":
         # ensure username was submitted
+        if not request.form.get("name"):
+            return apology("must provide name")
+
         if not request.form.get("username"):
             return apology("must provide username")
 
@@ -54,7 +58,7 @@ def register():
         return apology("passwords do not match")
 
     #insert user into database
-    result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+    result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name = request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
 
     #check if username is avalible
     if not result:
@@ -72,7 +76,7 @@ def register():
 @app.route("/")
 def homepage():
     "startpagina"
-    return render_template("peop.html")
+    return render_template("index.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

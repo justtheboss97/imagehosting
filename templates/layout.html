@@ -16,7 +16,7 @@
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        <title>C$50 Finance: {% block title %}{% endblock %}</title>
+        <title>Icarus: {% block title %}{% endblock %}</title>
 
     </head>
 
@@ -50,6 +50,7 @@
                         {% else %}
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('login') }}">Log In</a></li>
+                                <li><a href="{{ url_for('register') }}">Register</a></li>
                             </ul>
                         {% endif %}
                     </div>

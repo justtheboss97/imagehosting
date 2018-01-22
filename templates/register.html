@@ -1,7 +1,11 @@
 <!DOCTYPE html>
+{% extends "layout.html" %}
 
-<head>Register</head>
+{% block title %}
+    Register
+{% endblock %}
 
+{% block main %}
 <body>
     <form action="{{ url_for('register') }}" method="post">
         <fieldset>
@@ -24,3 +28,4 @@
         </fieldset>
     </form>
 </body>
+{% endblock %}
