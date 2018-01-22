@@ -94,8 +94,13 @@ def create():
     if check:
         return apology("Community already exists")
 
-    result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc")))
+    result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc"))
 
+    session["user_id"] = result
+
+    return redirect(url_for("index"))
+
+    return render_template("index.html")
 
 
 @app.route("/")
