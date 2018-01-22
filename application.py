@@ -30,7 +30,6 @@ Session(app)
 db = SQL("sqlite:///icarus.db")
 
 
-# register for the website
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
@@ -53,30 +52,40 @@ def register():
     else:
         return render_template("register.html")
 
+    check = db.execute("SELECT username FROM users WHERE username = :username", username = request.form.get("username"))
+    if check:
+        return apology("username already exists")
+
     #check if passwords match
     if request.form.get("password") != request.form.get("confirm password"):
         return apology("passwords do not match")
 
     #insert user into database
-    result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name = request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
-
-    #check if username is avalible
-    if not result:
-        return apology("username not availible ")
+    result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
 
     #login user
     session["user_id"] = result
 
     return redirect(url_for("index"))
 
-    return render_template("login.html")
+    return render_template("index.html")
+
+
+@app.route("/index", methods=["GET", "POST"])
+def index():
+    return render_template("index.html")
+
+
+@app.route("/communities", methods=["GET", "POST"])
+def communities():
+    return render_template("communities.html")
 
 
 
 @app.route("/")
 def homepage():
     "startpagina"
-    return render_template("index.html")
+    return render_template("login.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -112,3 +121,13 @@ def login():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    """Log user out."""
+
+    # forget any user_id
+    session.clear()
+
+    # redirect user to login form
+    return redirect(url_for("login"))
