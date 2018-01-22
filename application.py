@@ -87,6 +87,11 @@ def homepage():
     "startpagina"
     return render_template("login.html")
 
+@login_required
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    return render_template("profile.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in."""
