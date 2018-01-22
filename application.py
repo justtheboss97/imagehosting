@@ -87,10 +87,14 @@ def create():
 
     if request.method == "POST":
         if not request.form.get("name"):
-            return apology("must provide Community Name")
+            return apology("must provide a Community Name")
 
+    check = db.execute("SELECT name FROM communities WHERE name = :name", name = request.form.get("name"))
 
+    if check:
+        return apology("Community already exists")
 
+    result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc")))
 
 
 
