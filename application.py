@@ -106,7 +106,7 @@ def create():
 @app.route("/")
 def homepage():
     "startpagina"
-    return render_template("login.html")
+    return render_template("index.html")
 
 @login_required
 @app.route("/profile", methods=["GET", "POST"])

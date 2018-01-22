@@ -11,7 +11,7 @@ body
 
 .fb-profile .fb-image-lg{
     z-index: 0;
-    width: 100%;
+    width: 50%;
     height: 100px;
     margin-bottom: 10px;
 }
