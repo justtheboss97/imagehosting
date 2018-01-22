@@ -82,6 +82,8 @@ def communities():
 
 
 
+
+
 @app.route("/")
 def homepage():
     "startpagina"
