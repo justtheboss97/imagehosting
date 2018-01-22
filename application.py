@@ -80,6 +80,16 @@ def index():
 def communities():
     return render_template("communities.html")
 
+@app.route("/create", methods=["GET", "POST"])
+def create():
+    if request.method == "GET":
+        return render_template("create.html")
+
+    if request.method == "POST":
+        if not request.form.get("name"):
+            return apology("must provide Community Name")
+
+
 
 
 @app.route("/")
