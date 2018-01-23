@@ -12,12 +12,12 @@ def select(table, query):
     if table == "communities":
 
         # returns all information of community query
-        if query != "all"
+        if query != "all":
             return db.execute("SELECT * FROM communities WHERE name = :name", name = query)
 
         # returns name description and private of query community
         else:
-            return db.execute("SELECT name FROM communities")
+            return db.execute("SELECT name, desc, private FROM communities")
 
     # returns all information of all images from community query
     if table == "images":
