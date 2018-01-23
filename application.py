@@ -88,7 +88,17 @@ def register():
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    if request.method == "POST":
+        return render_template("search.html", resultaat = search())
+    else:
+        return render_template("index.html")
+
+
+def search():
+    if request.method == "POST":
+        opdracht = request.form.get("opdracht")
+        resultaat = db.execute("SELECT name, private, desc FROM communities WHERE name = :opdracht", opdracht = opdracht)
+        return resultaat
 
 
 @app.route("/communities", methods=["GET", "POST"])
