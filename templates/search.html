@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Communities
+    Search
 {% endblock %}
 
 {% block main %}
-    <table style="width: 100%; padding: 15px;">
+        <table style="width: 100%; padding: 15px;">
         <tr
         style = "background-color: ##CEF6E3; color: #537fbe;">
             <th>Communities</th>
             <th>Private</th>
             <th>Description</th>
         </tr>
-        {% for community in result %}
+        {% for community in resultaat %}
             <tr>
                 <td>{{ community.name }}</td>
                 <td>{{ community.private }}</td>
