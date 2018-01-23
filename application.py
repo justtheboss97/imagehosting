@@ -35,10 +35,12 @@ def register():
     """Register user."""
 
     if request.method == "POST":
-        # ensure username was submitted
+
+        # ensure name was submitted
         if not request.form.get("name"):
             return apology("must provide name")
 
+        # ensure username was submitted
         if not request.form.get("username"):
             return apology("must provide username")
 
@@ -49,18 +51,22 @@ def register():
         # ensure password was submitted
         elif not request.form.get("confirm password"):
             return apology("must confirm password")
+
     else:
         return render_template("register.html")
 
+    #Take the username from the table users, if it exists
     check = db.execute("SELECT username FROM users WHERE username = :username", username = request.form.get("username"))
+
+    #If check finds a name, return an error
     if check:
         return apology("username already exists")
 
-    #check if passwords match
+    #Check if passwords match
     if request.form.get("password") != request.form.get("confirm password"):
         return apology("passwords do not match")
 
-    #insert user into database
+    #Insert the user, username and hash into the database
     result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
 
     #login user
@@ -82,18 +88,24 @@ def communities():
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
+
     if request.method == "GET":
         return render_template("create.html")
 
     if request.method == "POST":
+
+        # ensure community name was submitted
         if not request.form.get("name"):
             return apology("must provide a Community Name")
 
+    # check if communityname is existant in database
     check = db.execute("SELECT name FROM communities WHERE name = :name", name = request.form.get("name"))
 
+    # if community name does already exist, return error
     if check:
         return apology("Community already exists")
 
+    # insert community name, privacy, moderator and description into database
     result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc"))
 
     session["user_id"] = result
