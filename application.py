@@ -134,11 +134,13 @@ def create():
 @login_required
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
-    "Upload page"
-    return render_template("upload.html")
 
-    if request.form.get("title"):
-        query.insert("images",)
+    "Upload page"
+    if request.method == "POST":
+
+
+    else:
+        return render_template("upload.html")
 
 
 @app.route("/")
