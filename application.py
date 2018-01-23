@@ -69,7 +69,7 @@ def register():
         return apology("passwords do not match")
 
     #Insert the user, username and hash into the database
-    result = queries.insert("users", request.form.get("name"), request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+    result = queries.insert("users", (request.form.get("name"), request.form.get("username"), pwd_context.hash(request.form.get("password"))))
     print(result)
 
     #login user
