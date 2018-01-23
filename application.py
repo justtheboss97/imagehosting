@@ -69,7 +69,7 @@ def register():
         return apology("passwords do not match")
 
     #Insert the user, username and hash into the database
-    result = queries.insert("users", request.form.get("name"), request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+    result = queries.insert("users", (request.form.get("name"), request.form.get("username"), pwd_context.hash(request.form.get("password"))))
     print(result)
 
     #login user
@@ -112,8 +112,7 @@ def create():
         return apology("Community already exists")
 
     # insert community name, privacy, moderator and description into database
-    result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc"))
-
+    result = queries.insert("communities", (request.form.get("name"), request.form.get("private"), session["user_id"], request.form.get("desc")))
 
     return redirect(url_for("index"))
 
