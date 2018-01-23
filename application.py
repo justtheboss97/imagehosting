@@ -1,5 +1,6 @@
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from werkzeug.utils import secure_filename
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
@@ -7,9 +8,15 @@ from passlib.context import CryptContext
 import datetime
 from helpers import *
 import queries
+import os
+
+#Sets upload folders and allowed extensions
+UPLOAD_FOLDER = 'image_database'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # configure application
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -19,7 +26,6 @@ if app.config["DEBUG"]:
         response.headers["Expires"] = 0
         response.headers["Pragma"] = "no-cache"
         return response
-
 
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
@@ -125,9 +131,31 @@ def create():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
 
+    def allowed_file(filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
     "Upload page"
     if request.method == "POST":
 
+        # check if the post request has the file part
+        if 'images' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+
+        file = request.files['images']
+
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('index',filename=filename))
 
     else:
         return render_template("upload.html")
