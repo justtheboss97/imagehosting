@@ -153,6 +153,7 @@ button {
   max-width: 500px;
   margin: auto;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .back-to-article {
