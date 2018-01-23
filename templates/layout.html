@@ -12,9 +12,11 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+        <link href="{{ url_for('static', filename='upload.css') }}" rel="stylesheet"/>
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
         <title>Icarus{% block title %}Icarus{% endblock %}</title>
 
@@ -47,7 +49,9 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('profile') }}">Profile</a></li>
                             </ul>
-
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="{{ url_for('upload') }}">Upload</a></li>
+                            </ul>
                         {% else %}
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('login') }}">Log In</a></li>

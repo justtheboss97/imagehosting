@@ -102,6 +102,12 @@ def create():
 
     return render_template("index.html")
 
+@login_required
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    "Upload page"
+    return render_template("upload.html")
+
 
 @app.route("/")
 def homepage():
