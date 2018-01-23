@@ -8,10 +8,10 @@ def select(table, query):
         return db.execute("SELECT * FROM users WHERE id = :id", id = query)
 
     if table == "communities":
-        if query != "all"
+        if query != "all":
             return db.execute("SELECT * FROM communities WHERE name = :name", name = query)
         else:
-            return db.execute("SELECT name FROM communities")
+            return db.execute("SELECT name, desc, private FROM communities")
 
 
 def select_no_login(username):
