@@ -6,6 +6,7 @@ from tempfile import mkdtemp
 from passlib.context import CryptContext
 import datetime
 from helpers import *
+import queries
 
 # configure application
 app = Flask(__name__)
@@ -52,7 +53,7 @@ def register():
     else:
         return render_template("register.html")
 
-    check = db.execute("SELECT username FROM users WHERE username = :username", username = request.form.get("username"))
+    check = queries.select_no_login(request.form.get("username"))
     if check:
         return apology("username already exists")
 
@@ -62,6 +63,7 @@ def register():
 
     #insert user into database
     result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+    print(result)
 
     #login user
     session["user_id"] = result
@@ -80,6 +82,8 @@ def index():
 def communities():
     return render_template("communities.html")
 
+
+@login_required
 @app.route("/create", methods=["GET", "POST"])
 def create():
     if request.method == "GET":
@@ -96,7 +100,6 @@ def create():
 
     result = db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name=request.form.get("name"), private=request.form.get("private"), mod=session["user_id"], desc=request.form.get("desc"))
 
-    session["user_id"] = result
 
     return redirect(url_for("index"))
 
@@ -132,7 +135,7 @@ def login():
             return apology("must provide password")
 
         # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        rows = queries.select_no_login(request.form.get("username"))
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
