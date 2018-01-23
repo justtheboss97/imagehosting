@@ -69,7 +69,7 @@ def register():
         return apology("passwords do not match")
 
     #Insert the user, username and hash into the database
-    result = db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name=request.form.get("name"), username=request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
+    result = queries.insert("users", request.form.get("name"), request.form.get("username"), hash=pwd_context.hash(request.form.get("password")))
     print(result)
 
     #login user
@@ -104,7 +104,7 @@ def create():
             return apology("must provide a Community Name")
 
     # check if communityname is existant in database
-    check = db.execute("SELECT name FROM communities WHERE name = :name", name = request.form.get("name"))
+    check = queries.select("communities", request.form.get("name"))
 
     # if community name does already exist, return error
     if check:
