@@ -87,8 +87,9 @@ def index():
 
 @app.route("/communities", methods=["GET", "POST"])
 def communities():
+    result = queries.select("communities", "all")
+    print(result)
     return render_template("communities.html")
-
 
 @login_required
 @app.route("/create", methods=["GET", "POST"])
