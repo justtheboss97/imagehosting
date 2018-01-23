@@ -124,6 +124,9 @@ def upload():
     "Upload page"
     return render_template("upload.html")
 
+    if request.form.get("title"):
+        query.insert("images",)
+
 
 @app.route("/")
 def homepage():
