@@ -89,6 +89,9 @@ def register():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
+        images = queries.select("images", "frontpage")
+        return render_template("index.html", images)
+
         return render_template("search.html", resultaat = search())
     else:
         return render_template("index.html")
@@ -97,7 +100,7 @@ def index():
 def search():
     if request.method == "POST":
         opdracht = request.form.get("opdracht")
-        resultaat = db.execute("SELECT name, private, desc FROM communities WHERE name = :opdracht", opdracht = opdracht)
+        resultaat = queries.searching(opdracht)
         return resultaat
 
 
@@ -166,6 +169,11 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('index',filename=filename))
+
+        # TODO test
+        user = queries.select("users", session["user_id"])
+        community = queries.select(communities, request.form.get("community upload"))
+        result = queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
 
     else:
         return render_template("upload.html")
