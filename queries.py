@@ -21,7 +21,10 @@ def select(table, query):
 
     # returns all information of all images from community query
     if table == "images":
-        return db.execute("SELECT * FROM images WHERE communties = :communities", communities = query)
+        if query == "frontpage":
+            return db.execute("SELECT * FROM images")
+        else:
+            return db.execute("SELECT * FROM images WHERE communties = :communities", communities = query)
 
 
 # check for username in database
