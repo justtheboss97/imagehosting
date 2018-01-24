@@ -90,7 +90,7 @@ def register():
 def index():
     if request.method == "POST":
         images = queries.select("images", "frontpage")
-        return render_template("index.html", images)
+        return render_template("index.html", images = images)
 
         return render_template("search.html", resultaat = search())
     else:
@@ -169,10 +169,12 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # Insert into database.
             user = queries.select("users", session["user_id"])
             community = queries.select("communities", request.form.get("community upload"))
-            queries.insert("images", (user[0]["username"], session["user_id "], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
+
+            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
 
             return redirect(url_for('index',filename=filename))
 
@@ -188,7 +190,44 @@ def homepage():
 @login_required
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    return render_template("profile.html")
+
+    #select id, name, description, birthday from profile
+    profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+    print(profiel)
+
+    #if all are available render the profile page
+    if profiel:
+        return render_template("profile.html", profiel = profiel[0])
+
+    #if not, redirect to create profile page
+    return redirect(url_for("newprofile"))
+
+
+@login_required
+@app.route("/newprofile", methods=["GET", "POST"])
+def newprofile():
+
+    if request.method == "POST":
+
+        #ensure is name entered
+        if not request.form.get("name"):
+            flash('Please enter a name')
+
+        #ensure birthday is entered
+        if not request.form.get("birthday"):
+            flash('Select a birthday')
+
+        #ensure description is entered
+        if not request.form.get("profiledescription"):
+            flash('Please enter a discription')
+
+        db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)", id = session["user_id"],
+        name = request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"))
+
+        return render_template("index.html")
+
+    return render_template("newprofile.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
