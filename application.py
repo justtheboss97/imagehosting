@@ -172,7 +172,7 @@ def upload():
             # Insert into database.
             user = queries.select("users", session["user_id"])
             community = queries.select("communities", request.form.get("community upload"))
-            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
+            queries.insert("images", (user[0]["username"], session["user_id "], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
 
             return redirect(url_for('index',filename=filename))
 
