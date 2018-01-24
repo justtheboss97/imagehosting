@@ -51,5 +51,5 @@ def searching(opdracht):
 
 
 # functions for the profile page
-def profile(table, user):
+# def profile(table, user):
 
