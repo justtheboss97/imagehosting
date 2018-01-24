@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<form action="{{ url_for('upload') }}" method="post">
+<form action="{{ url_for('upload') }}" method="post" enctype = "multipart/form-data">
 
   <h1><strong>Icarus</strong> Image upload</h1>
 
@@ -19,7 +19,7 @@
   </div>
 
   <div class="form-group">
-    <button type="submit" name="upload_image" >Upload images </button>
+    <button type="submit" name="upload_image">Upload images </button>
   </div>
 
 </form>
