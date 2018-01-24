@@ -190,7 +190,44 @@ def homepage():
 @login_required
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    return render_template("profile.html")
+
+    #select id, name, description, birthday from profile
+    profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+    print(profiel)
+
+    #if all are available render the profile page
+    if profiel:
+        return render_template("profile.html", profiel = profiel[0])
+
+    #if not, redirect to create profile page
+    return redirect(url_for("newprofile"))
+
+
+@login_required
+@app.route("/newprofile", methods=["GET", "POST"])
+def newprofile():
+
+    if request.method == "POST":
+
+        #ensure is name entered
+        if not request.form.get("name"):
+            flash('Please enter a name')
+
+        #ensure birthday is entered
+        if not request.form.get("birthday"):
+            flash('Select a birthday')
+
+        #ensure description is entered
+        if not request.form.get("profiledescription"):
+            flash('Please enter a discription')
+
+        db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)", id = session["user_id"],
+        name = request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"))
+
+        return render_template("index.html")
+
+    return render_template("newprofile.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
