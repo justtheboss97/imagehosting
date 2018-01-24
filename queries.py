@@ -9,8 +9,7 @@ def select(table, query):
     if table == "users":
         return db.execute("SELECT * FROM users WHERE id = :id", id = query)
 
-    if table == "communities":
-
+    elif table == "communities":
         # returns all information of community query
         if query != "all":
             return db.execute("SELECT * FROM communities WHERE name = :name", name = query)
@@ -20,11 +19,14 @@ def select(table, query):
             return db.execute("SELECT name, desc, private FROM communities")
 
     # returns all information of all images from community query
-    if table == "images":
+    elif table == "images":
         if query == "frontpage":
             return db.execute("SELECT * FROM images")
         else:
             return db.execute("SELECT * FROM images WHERE communties = :communities", communities = query)
+
+    elif table == "profile":
+        db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = query)
 
 
 # check for username in database
@@ -46,11 +48,14 @@ def insert(table, values):
         return db.execute("INSERT INTO images (user, userid, community, communityid, title, description, path) VALUES(:user, :userid, :community, :communityid, :title, :description, :path)",
         user = values[0], userid = values[1], community = values[2], communityid = values[3], title = values[4], description = values[5], path = values[6])
 
+    if table == "profile":
+        return db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)",
+        id = values[0], name = values[1], birthday = values[2], description = values[3])
+
+
+
 # queries the database for a search
 def searching(opdracht):
     return db.execute("SELECT name, private, desc FROM communities WHERE name = :opdracht", opdracht = opdracht)
 
-
-# functions for the profile page
-# def profile(table, user):
 

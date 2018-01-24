@@ -192,7 +192,7 @@ def homepage():
 def profile():
 
     #select id, name, description, birthday from profile
-    profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+    profiel = queries.select("profile", session["user_id"])
     print(profiel)
 
     #if all are available render the profile page
@@ -221,8 +221,7 @@ def newprofile():
         if not request.form.get("profiledescription"):
             flash('Please enter a discription')
 
-        db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)", id = session["user_id"],
-        name = request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"))
+        queries.insert("profile", (session["user_id"], request.form.get("name"), request.form.get("birthday"), request.form.get("profiledescription")))
 
         return render_template("index.html")
 
