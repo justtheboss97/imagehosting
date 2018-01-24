@@ -90,7 +90,7 @@ def register():
 def index():
     if request.method == "POST":
         images = queries.select("images", "frontpage")
-        return render_template("index.html", images)
+        return render_template("index.html", images = images)
 
         return render_template("search.html", resultaat = search())
     else:
@@ -169,10 +169,12 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # Insert into database.
             user = queries.select("users", session["user_id"])
             community = queries.select("communities", request.form.get("community upload"))
-            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
+            print(community, user)
+            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
 
             return redirect(url_for('index',filename=filename))
 

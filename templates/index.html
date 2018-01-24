@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Homepage
 {% endblock %}
 
 {% block main %}
@@ -10,47 +10,16 @@
             <div class="form-group">
                 <input autocomplete="on" autofocus class="form-control" name="opdracht" placeholder="Enter keywords" type="text"/>
             </div>
+            <img src="../image_database/fat_cat.jpg" style="width:100%">
+            <img src="../image_database/fat_cat.jpg" style="width:100%">
         </fieldset>
     </form>
 
-    {% set counter = 0 -%}
-     <div class="row">
-        {% for community in result %}
 
-              <div class="column">
-                <img src="wedding.jpg">
-                <img src="rocks.jpg">
-                <img src="falls2.jpg">
-                <img src="paris.jpg">
-                <img src="nature.jpg">
-                <img src="mist.jpg">
-                <img src="paris.jpg">
-              </div>
-              <div class="column">
-                <img src="underwater.jpg">
-                <img src="ocean.jpg">
-                <img src="wedding.jpg">
-                <img src="mountainskies.jpg">
-                <img src="rocks.jpg">
-                <img src="underwater.jpg">
-              </div>
-              <div class="column">
-                <img src="wedding.jpg">
-                <img src="rocks.jpg">
-                <img src="falls2.jpg">
-                <img src="paris.jpg">
-                <img src="nature.jpg">
-                <img src="mist.jpg">
-                <img src="paris.jpg">
-              </div>
-              <div class="column">
-                <img src="underwater.jpg">
-                <img src="ocean.jpg">
-                <img src="wedding.jpg">
-                <img src="mountainskies.jpg">
-                <img src="rocks.jpg">
-                <img src="underwater.jpg">
-              </div>
-    </div>
+
+
+
+
+
 
 {% endblock %}
