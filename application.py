@@ -11,7 +11,7 @@ import queries
 import os
 
 #Sets upload folders and allowed extensions
-UPLOAD_FOLDER = 'image_database'
+UPLOAD_FOLDER = '/static/image_database'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # configure application
@@ -176,6 +176,7 @@ def upload():
 
             queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
 
+
             return redirect(url_for('index',filename=filename))
 
     else:
@@ -262,6 +263,12 @@ def login():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+@login_required
+@app.route("/images", methods=["GET", "POST"])
+def images():
+
+    return render_template("images.html")
 
 @app.route("/logout")
 def logout():
