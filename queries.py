@@ -21,7 +21,10 @@ def select(table, query):
 
     # returns all information of all images from community query
     if table == "images":
-        return db.execute("SELECT * FROM images WHERE communties = :communities", communities = query)
+        if query == "frontpage":
+            return db.execute("SELECT * FROM images")
+        else:
+            return db.execute("SELECT * FROM images WHERE communties = :communities", communities = query)
 
 
 # check for username in database
@@ -35,7 +38,19 @@ def select_no_login(username):
 def insert(table, values):
     if table == "users":
         return db.execute("INSERT INTO users (name, username, hash) VALUES(:name, :username, :hash)", name = values[0], username = values[1], hash = values[2])
+
     if table == "communities":
         return  db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name = values[0], private = values[1], mod = values[2], desc = values[3])
+
     if table == "images":
-        return db.execute("INSERT INTO images (user, userid, community, communityid, title, description, path) VALUES(:user, :userid, :community, :communityid, :title, :descrition, :path)", user = values[0], userid = values[1], community = values[2], communityid = values[3], title = values[4], description = values[5], path = values[6])
+        return db.execute("INSERT INTO images (user, userid, community, communityid, title, description, path) VALUES(:user, :userid, :community, :communityid, :title, :description, :path)",
+        user = values[0], userid = values[1], community = values[2], communityid = values[3], title = values[4], description = values[5], path = values[6])
+
+# queries the database for a search
+def searching(opdracht):
+    return db.execute("SELECT name, private, desc FROM communities WHERE name = :opdracht", opdracht = opdracht)
+
+
+# functions for the profile page
+# def profile(table, user):
+
