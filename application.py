@@ -137,7 +137,7 @@ def upload():
 
     "Upload page"
     if request.method == "POST":
-
+        print("Hallo")
 
     else:
         return render_template("upload.html")
