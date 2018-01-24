@@ -43,7 +43,8 @@ def insert(table, values):
         return  db.execute("INSERT INTO communities (name, private, mod, desc) VALUES(:name, :private, :mod, :desc)", name = values[0], private = values[1], mod = values[2], desc = values[3])
 
     if table == "images":
-        return db.execute("INSERT INTO images (user, userid, community, communityid, title, description, path) VALUES(:user, :userid, :community, :communityid, :title, :descrition, :path)", user = values[0], userid = values[1], community = values[2], communityid = values[3], title = values[4], description = values[5], path = values[6])
+        return db.execute("INSERT INTO images (user, userid, community, communityid, title, description, path) VALUES(:user, :userid, :community, :communityid, :title, :description, :path)",
+        user = values[0], userid = values[1], community = values[2], communityid = values[3], title = values[4], description = values[5], path = values[6])
 
 # queries the database for a search
 def searching(opdracht):

@@ -168,12 +168,13 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('index',filename=filename))
 
-        # TODO test
-        user = queries.select("users", session["user_id"])
-        community = queries.select(communities, request.form.get("community upload"))
-        result = queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
+            # Insert into database.
+            user = queries.select("users", session["user_id"])
+            community = queries.select("communities", request.form.get("community upload"))
+            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), filename))
+
+            return redirect(url_for('index',filename=filename))
 
     else:
         return render_template("upload.html")
