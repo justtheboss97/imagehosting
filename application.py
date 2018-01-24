@@ -97,7 +97,7 @@ def index():
 def search():
     if request.method == "POST":
         opdracht = request.form.get("opdracht")
-        resultaat = db.execute("SELECT name, private, desc FROM communities WHERE name = :opdracht", opdracht = opdracht)
+        resultaat = queries.searching(opdracht)
         return resultaat
 
 
@@ -166,6 +166,11 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('index',filename=filename))
+
+        # TODO get community in which image is posted, get path
+        #user = queries.select("users", session["user_id"])
+        #community = queries.select(communities, TODO )
+        #result = queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path TODO))
 
     else:
         return render_template("upload.html")
