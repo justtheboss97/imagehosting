@@ -1,5 +1,6 @@
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from werkzeug.utils import secure_filename
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
@@ -7,9 +8,15 @@ from passlib.context import CryptContext
 import datetime
 from helpers import *
 import queries
+import os
+
+#Sets upload folders and allowed extensions
+UPLOAD_FOLDER = 'image_database'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # configure application
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -19,7 +26,6 @@ if app.config["DEBUG"]:
         response.headers["Expires"] = 0
         response.headers["Pragma"] = "no-cache"
         return response
-
 
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
@@ -135,9 +141,31 @@ def create():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
 
+    def allowed_file(filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
     "Upload page"
     if request.method == "POST":
-        print("Hallo")
+
+        # check if the post request has the file part
+        if 'images' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+
+        file = request.files['images']
+
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('index',filename=filename))
 
     else:
         return render_template("upload.html")
@@ -151,7 +179,44 @@ def homepage():
 @login_required
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    return render_template("profile.html")
+
+    #select id, name, description, birthday from profile
+    profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+    print(profiel)
+
+    #if all are available render the profile page
+    if profiel:
+        return render_template("profile.html", profiel = profiel[0])
+
+    #if not, redirect to create profile page
+    return redirect(url_for("newprofile"))
+
+
+@login_required
+@app.route("/newprofile", methods=["GET", "POST"])
+def newprofile():
+
+    if request.method == "POST":
+
+        #ensure is name entered
+        if not request.form.get("name"):
+            flash('Please enter a name')
+
+        #ensure birthday is entered
+        if not request.form.get("birthday"):
+            flash('Select a birthday')
+
+        #ensure description is entered
+        if not request.form.get("profiledescription"):
+            flash('Please enter a discription')
+
+        db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)", id = session["user_id"],
+        name = request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"))
+
+        return render_template("index.html")
+
+    return render_template("newprofile.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
