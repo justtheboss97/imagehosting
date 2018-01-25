@@ -11,7 +11,7 @@ import queries
 import os
 
 #Sets upload folders and allowed extensions
-UPLOAD_FOLDER = '/static/image_database'
+UPLOAD_FOLDER = 'static/image_database'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # configure application
