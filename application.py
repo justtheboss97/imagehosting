@@ -88,13 +88,18 @@ def register():
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
+
+
+    # Import image path from databse.
+    image_paths = db.execute("SELECT path FROM images")
+
     if request.method == "POST":
         images = queries.allimages()
         return render_template("index.html", images = images)
 
         return render_template("search.html", resultaat = search())
     else:
-        return render_template("index.html")
+        return render_template("index.html",database = image_paths)
 
 
 def search():
@@ -208,20 +213,86 @@ def newprofile():
         #ensure is name entered
         if not request.form.get("name"):
             flash('Please enter a name')
+            return render_template("newprofile.html")
 
         #ensure birthday is entered
         if not request.form.get("birthday"):
             flash('Select a birthday')
+            return render_template("newprofile.html")
 
         #ensure description is entered
         if not request.form.get("profiledescription"):
             flash('Please enter a discription')
+            return render_template("newprofile.html")
 
         queries.saveprofile()
 
-        return render_template("index.html")
+        profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+
+        return render_template("profile.html", profiel = profiel[0])
 
     return render_template("newprofile.html")
+
+@login_required
+@app.route("/editprofile", methods=["GET", "POST"])
+def editprofile():
+
+    if request.method == "POST":
+
+        #ensure is name entered
+        if not request.form.get("name"):
+            flash('Please enter a name')
+            return render_template("editprofile.html")
+
+        #ensure birthday is entered
+        if not request.form.get("birthday"):
+            flash('Select a birthday')
+            return render_template("editprofile.html")
+
+        #ensure description is entered
+        if not request.form.get("profiledescription"):
+            flash('Please enter a discription')
+            return render_template("editprofile.html")
+
+        db.execute("UPDATE profile SET name = :name, birthday = :birthday, description = :description WHERE id = :id", name= request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"), id = session["user_id"])
+
+        profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+
+        return render_template("profile.html", profiel = profiel[0])
+
+    return render_template("editprofile.html")
+
+@login_required
+@app.route("/password", methods=["GET", "POST"])
+def password():
+
+    if request.method == "POST":
+
+        if not request.form.get("password"):
+            flash('Please enter your current password')
+            return render_template("password.html")
+
+        if not request.form.get("new"):
+            flash('Please enter your new password')
+            return render_template("password.html")
+
+        if not request.form.get("rnew"):
+            flash('Please enter your retyped new password')
+            return render_template("password.html")
+
+        foundpassword = db.execute("SELECT hash FROM users WHERE id = :id", id = session["user_id"])
+
+        if not pwd_context.verify(request.form.get("password"), foundpassword[0]["hash"]):
+            flash('Your entered current password did not match with the one in our database')
+            return render_template("password.html")
+
+        db.execute("UPDATE users SET hash = :hash WHERE id = :id", hash = pwd_context.hash(request.form.get("rnew")), id = session["user_id"])
+
+        flash('Password succesfuly changed')
+
+        return render_template("index.html")
+
+    return render_template("password.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
