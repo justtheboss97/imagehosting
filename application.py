@@ -63,7 +63,7 @@ def register():
         return render_template("register.html")
 
     #Take the username from the table users, if it exists
-    check = queries.select_no_login(request.form.get("username"))
+    check = queries.checkusername()
 
 
     #If check finds a name, return an error
@@ -75,7 +75,7 @@ def register():
         return apology("passwords do not match")
 
     #Insert the user, username and hash into the database
-    result = queries.insert("users", (request.form.get("name"), request.form.get("username"), pwd_context.hash(request.form.get("password"))))
+    result = queries.register1()
     print(result)
 
     #login user
@@ -89,7 +89,7 @@ def register():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        images = queries.select("images", "frontpage")
+        images = queries.allimages()
         return render_template("index.html", images = images)
 
         return render_template("search.html", resultaat = search())
@@ -99,14 +99,13 @@ def index():
 
 def search():
     if request.method == "POST":
-        opdracht = request.form.get("opdracht")
-        resultaat = queries.searching(opdracht)
+        resultaat = queries.searching()
         return resultaat
 
 
 @app.route("/communities", methods=["GET", "POST"])
 def communities():
-    result = queries.select("communities", "all")
+    result = queries.allcommunities()
     if not result:
         return apology("No communities available at the moment")
 
@@ -127,14 +126,14 @@ def create():
             return apology("must provide a Community Name")
 
     # check if communityname is existant in database
-    check = queries.select("communities", request.form.get("name"))
+    check = queries.communitycheck()
 
     # if community name does already exist, return error
     if check:
         return apology("Community already exists")
 
     # insert community name, privacy, moderator and description into database
-    result = queries.insert("communities", (request.form.get("name"), request.form.get("private"), session["user_id"], request.form.get("desc")))
+    result = queries.createcommunity()
 
     return redirect(url_for("index"))
 
@@ -171,11 +170,7 @@ def upload():
 
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # Insert into database.
-            user = queries.select("users", session["user_id"])
-            community = queries.select("communities", request.form.get("community upload"))
-
-            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
-
+            queries.uploadimage(path)
 
             return redirect(url_for('index',filename=filename))
 
@@ -193,7 +188,7 @@ def homepage():
 def profile():
 
     #select id, name, description, birthday from profile
-    profiel = queries.select("profile", session["user_id"])
+    profiel = queries.profilelookup()
     print(profiel)
 
     #if all are available render the profile page
@@ -222,7 +217,7 @@ def newprofile():
         if not request.form.get("profiledescription"):
             flash('Please enter a discription')
 
-        queries.insert("profile", (session["user_id"], request.form.get("name"), request.form.get("birthday"), request.form.get("profiledescription")))
+        queries.saveprofile()
 
         return render_template("index.html")
 
@@ -248,7 +243,7 @@ def login():
             return apology("must provide password")
 
         # query database for username
-        rows = queries.select_no_login(request.form.get("username"))
+        rows = queries.logincheck()
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
