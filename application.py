@@ -91,11 +91,10 @@ def index():
 
 
     # Import image path from databse.
-    image_paths = db.execute("SELECT path FROM images")
+    image_paths = queries.imagepath()
 
     if request.method == "POST":
-        images = queries.allimages()
-        return render_template("index.html", images = images)
+        return render_template("index.html", database = image_paths)
 
         return render_template("search.html", resultaat = search())
     else:
@@ -227,7 +226,7 @@ def newprofile():
 
         queries.saveprofile()
 
-        profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+        profiel = queries.profilelookup()
 
         return render_template("profile.html", profiel = profiel[0])
 
@@ -254,9 +253,9 @@ def editprofile():
             flash('Please enter a discription')
             return render_template("editprofile.html")
 
-        db.execute("UPDATE profile SET name = :name, birthday = :birthday, description = :description WHERE id = :id", name= request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"), id = session["user_id"])
+        queries.updateprofile()
 
-        profiel = db.execute("SELECT id, name, description, birthday FROM profile WHERE id = :id", id = session["user_id"])
+        profiel = queries.profilelookup()
 
         return render_template("profile.html", profiel = profiel[0])
 
@@ -280,13 +279,13 @@ def password():
             flash('Please enter your retyped new password')
             return render_template("password.html")
 
-        foundpassword = db.execute("SELECT hash FROM users WHERE id = :id", id = session["user_id"])
+        foundpassword = queries.gethash()
 
         if not pwd_context.verify(request.form.get("password"), foundpassword[0]["hash"]):
             flash('Your entered current password did not match with the one in our database')
             return render_template("password.html")
 
-        db.execute("UPDATE users SET hash = :hash WHERE id = :id", hash = pwd_context.hash(request.form.get("rnew")), id = session["user_id"])
+        queries.updatepassword()
 
         flash('Password succesfuly changed')
 
