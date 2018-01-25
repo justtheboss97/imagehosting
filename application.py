@@ -11,7 +11,7 @@ import queries
 import os
 
 #Sets upload folders and allowed extensions
-UPLOAD_FOLDER = '/static/image_database'
+UPLOAD_FOLDER = 'static/image_database'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # configure application
@@ -88,13 +88,18 @@ def register():
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
+
+
+    # Import image path from databse.
+    image_paths = db.execute("SELECT path FROM images")
+
     if request.method == "POST":
         images = queries.select("images", "frontpage")
         return render_template("index.html", images = images)
 
         return render_template("search.html", resultaat = search())
     else:
-        return render_template("index.html")
+        return render_template("index.html",database = image_paths)
 
 
 def search():
