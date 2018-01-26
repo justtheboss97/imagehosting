@@ -11,42 +11,12 @@
                 <input autocomplete="on" autofocus class="form-control" name="opdracht" placeholder="Enter keywords" type="text"/>
             </div>
             <div class="row">
-            {% for image in database %}
+              {% for image in database %}
               <div class="column">
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
+                <a href="images"></a>
                 <img src= {{image.path}}>
               </div>
-              <div class="column">
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-              </div>
-              <div class="column">
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-              </div>
-              <div class="column">
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-                <img src= {{image.path}}>
-              </div>
-            {% endfor %}
+              {% endfor %}
             </div>
         </fieldset>
     </form>

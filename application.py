@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
@@ -9,6 +9,7 @@ import datetime
 from helpers import *
 import queries
 import os
+import random
 
 #Sets upload folders and allowed extensions
 UPLOAD_FOLDER = 'static/image_database'
@@ -88,7 +89,6 @@ def register():
 
 @app.route("/index", methods=["GET", "POST"])
 def index():
-
 
     # Import image path from databse.
     image_paths = db.execute("SELECT path FROM images")
@@ -178,15 +178,18 @@ def upload():
             # Insert into database.
             user = queries.select("users", session["user_id"])
             community = queries.select("communities", request.form.get("community upload"))
-
             queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
 
 
-            return redirect(url_for('index',filename=filename))
+            return redirect(url_for('uploaded_file',filename=filename))
 
     else:
         return render_template("upload.html")
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 @app.route("/")
 def homepage():
@@ -274,7 +277,8 @@ def login():
 @app.route("/images", methods=["GET", "POST"])
 def images():
 
-    return render_template("images.html")
+    if request.method == "GET":
+        return render_template("images.html")
 
 @app.route("/logout")
 def logout():
