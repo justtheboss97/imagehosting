@@ -63,12 +63,15 @@ def saveprofile():
     return db.execute("INSERT INTO profile (id, name, birthday, description) VALUES (:id, :name, :birthday, :description)",
     id = session["user_id"], name = request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"))
 
+# get image path for all images
 def imagepath():
     return db.execute("SELECT path FROM images")
 
+# updates profile is user saves changes
 def updateprofile():
     return db.execute("UPDATE profile SET name = :name, birthday = :birthday, description = :description WHERE id = :id", name= request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"), id = session["user_id"])
 
+#
 def gethash():
     return db.execute("SELECT hash FROM users WHERE id = :id", id = session["user_id"])
 
