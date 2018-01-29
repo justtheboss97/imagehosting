@@ -46,19 +46,23 @@ def register():
 
         # ensure name was submitted
         if not request.form.get("name"):
-            return apology("must provide name")
+            flash('Enter a valid name')
+            return render_template("register.html")
 
         # ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username")
+            flash('Enter a valid username')
+            return render_template("register.html")
 
         # ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password")
+            flash('Enter a password')
+            return render_template("register.html")
 
         # ensure password was submitted
         elif not request.form.get("confirm password"):
-            return apology("must confirm password")
+            flash('Select a birthday')
+            return render_template("register.html")
 
     else:
         return render_template("register.html")
@@ -69,15 +73,16 @@ def register():
 
     #If check finds a name, return an error
     if check:
-        return apology("username already exists")
+        flash('Username already in use')
+        return render_template("register.html")
 
     #Check if passwords match
     if request.form.get("password") != request.form.get("confirm password"):
-        return apology("passwords do not match")
+        flash('Retyped password does not match the first entered password')
+        return render_template("register.html")
 
     #Insert the user, username and hash into the database
     result = queries.register1()
-    print(result)
 
     #login user
     session["user_id"] = result
@@ -111,7 +116,8 @@ def search():
 def communities():
     result = queries.allcommunities()
     if not result:
-        return apology("No communities available at the moment")
+        flash('No communities available')
+        return render_template("index.html")
 
     else:
         return render_template("communities.html", result = result)
@@ -127,14 +133,16 @@ def create():
 
         # ensure community name was submitted
         if not request.form.get("name"):
-            return apology("must provide a Community Name")
+            flash('must provide a Community Name')
+            return render_template("create.html")
 
     # check if communityname is existant in database
     check = queries.communitycheck()
 
     # if community name does already exist, return error
     if check:
-        return apology("Community already exists")
+        flash('Community already exists')
+        return render_template("create.html")
 
     # insert community name, privacy, moderator and description into database
     result = queries.createcommunity()
@@ -198,7 +206,6 @@ def profile():
 
     #select id, name, description, birthday from profile
     profiel = queries.profilelookup()
-    print(profiel)
 
     #if all are available render the profile page
     if profiel:
@@ -311,18 +318,21 @@ def login():
 
         # ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username")
+            flash('Must provide username')
+            return render_template("login.html")
 
         # ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password")
+            flash('Must provide password')
+            return render_template("login.html")
 
         # query database for username
         rows = queries.logincheck()
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            flash('Invalid username and/or password')
+            return render_template("login.html")
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
