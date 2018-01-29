@@ -49,9 +49,9 @@ def selectcommunity():
     return db.execute("SELECT * FROM communities WHERE name = :name", name = request.form.get("community upload"))
 
 # saves image information to database
-def uploadimage():
-    community = selectcommunity(path)
-    return db.execute("INSERT INTO images (, userid, , communityid, title, description, path) VALUES(:userid, :communityid, :title, :description, :path)",
+def uploadimage(path):
+    community = selectcommunity()
+    return db.execute("INSERT INTO images (userid, communityid, title, description, path) VALUES(:userid, :communityid, :title, :description, :path)",
     userid = session["user_id"], communityid = community[0]["id"], title = request.form.get("title"), description = request.form.get("description"), path = path)
 
 # get user profile information
@@ -71,12 +71,21 @@ def imagepath():
 def updateprofile():
     return db.execute("UPDATE profile SET name = :name, birthday = :birthday, description = :description WHERE id = :id", name= request.form.get("name"), birthday = request.form.get("birthday"), description = request.form.get("profiledescription"), id = session["user_id"])
 
-#
+# gets hash from user
 def gethash():
     return db.execute("SELECT hash FROM users WHERE id = :id", id = session["user_id"])
 
+# updates password from user
 def updatepassword():
     return db.execute("UPDATE users SET hash = :hash WHERE id = :id", hash = pwd_context.hash(request.form.get("rnew")), id = session["user_id"])
 
+# get image path for all images
+# this is still in beta
+def communityimagepath():
+    return db.execute("SELECT path FROM images WHERE communityid = :communityid", communityid = 8)
+
+# gets all info of community
+def communityinfo():
+    return db.execute("SELECT * FROM communities WHERE id = :id", id = 8)
 
 

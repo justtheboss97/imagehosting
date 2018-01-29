@@ -1,0 +1,28 @@
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ communityinfo.name }}
+{% endblock %}
+
+{% block main %}
+    <form action="{{ url_for('index') }}" method="post">
+        <fieldset>
+              <div class="form-group">
+                <button type="submit" name="follow" style="align-right">Follow </button>
+              </div>
+            <h1>{{ communityinfo.name }}</h1>
+            <p>{{ communityinfo.desc }}</p>
+            <div class="row">
+              {% for image in database %}
+              <div class="column">
+                <a href="images"></a>
+                <img src= {{image.path}}>
+              </div>
+              {% endfor %}
+            </div>
+        </fieldset>
+    </form>
+
+
+{% endblock %}

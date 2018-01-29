@@ -175,12 +175,7 @@ def upload():
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # Insert into database.
 
-            user = queries.select("users", session["user_id"])
-            community = queries.select("communities", request.form.get("community upload"))
-            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
-
             queries.uploadimage(path)
-
 
             return redirect(url_for('uploaded_file',filename=filename))
 
@@ -355,3 +350,10 @@ def logout():
 
     # redirect user to login form
     return redirect(url_for("login"))
+
+@app.route("/community")
+def community():
+    images = queries.communityimagepath()
+    communityinfo = queries.communityinfo()
+    print(communityinfo)
+    return render_template("community.html", database = images, communityinfo = communityinfo[0])
