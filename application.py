@@ -359,15 +359,17 @@ def login():
 def images():
 
     if request.method == "GET":
-        '''
-        comments = db.execute("SELECT comment FROM comments WHERE imageid = :imageid", imageid = )
 
-        db.execute("SELECT path FROM images WHERE id= :id", id = )
-        '''
+        if request.form.get("comment"):
+            queries.comment()
 
+        comments = queries.selectcomment()
+        if comments:
+            print(comments)
+        else:
+            print("go fuck yourself")
         return render_template("images.html", comments = comments)
 
-    return render_template("images.html")
 
 @login_required
 @app.route("/gifs", methods=["GET", "POST"])
@@ -387,7 +389,7 @@ def gifs():
         api_response = api_instance.gifs_search_get(api_key, q, limit=limit, offset=offset, rating=rating, lang=lang, fmt=fmt)
         pprint(api_response)
 
-        #return render_template("loadedgifs.html", api_response = api_response["data"][0][bitly_url])
+        return render_template("loadedgifs.html", api_response = api_response["data"][0]["embed_url"])
 
     return render_template("gifs.html")
 

@@ -111,3 +111,11 @@ def like():
 # gives all images paths of communities user follows
 def followingcommunities():
     return following()
+
+# insert comment into database
+def comment():
+    return db.execute("INSERT INTO comment (id, image, comment) VALUES (:id, :image, :comment)", id = session["user_id"], image = "static/image_database/cat_6.jpeg", comment = request.form.get("comment"))
+
+# select all comments form image
+def selectcomment():
+    return db.execute("SELECT comment, id FROM comment WHERE image = :image", image = "static/image_database/cat_6.jpeg")
