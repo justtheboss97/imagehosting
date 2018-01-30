@@ -445,7 +445,7 @@ def images():
             queries.likes(1, image_path)
 
             flash('liked')
-            return render_template("community.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
+            return render_template("images.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
 
         # if user has liked already, unlike
         elif request.form['like'] == "unlike":
@@ -454,7 +454,7 @@ def images():
             # updates likes in database
             queries.likes(-1, image_path)
             flash("removed from likes")
-            return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
 
 
 
@@ -479,6 +479,7 @@ def gifs():
         while i < len(api_response.data):
             gifimages.append(api_response.data[i].images.original.url)
             i = i + 1
+            print (gifimages)
 
         return render_template("loadedgifs.html", gifimages = gifimages)
 
