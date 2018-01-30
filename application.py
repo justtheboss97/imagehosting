@@ -354,7 +354,17 @@ def login():
 def images():
 
     if request.method == "GET":
-        return render_template("images.html")
+        '''
+        comments = db.execute("SELECT comment FROM comments WHERE imageid = :imageid", imageid = )
+
+        db.execute("SELECT path FROM images WHERE id= :id", id = )
+        '''
+
+        return render_template("images.html", comments)
+
+    return render_template("images.html")
+
+
 
 @app.route("/logout")
 def logout():
