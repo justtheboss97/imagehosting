@@ -42,7 +42,7 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///icarus.db")
 
-
+# registers user
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
@@ -96,7 +96,7 @@ def register():
 
     return render_template("index.html")
 
-
+# homepage of site
 @app.route("/index", methods=["GET", "POST"])
 def index():
 
@@ -104,38 +104,53 @@ def index():
     image_paths = queries.imagepath()
 
     if request.method == "GET":
-        if queries.following:
-            images = queries.followingcommunities()
-            print(images)
-            return render_template("index.html",database = image_paths)
 
+        # checks if user is following communities
+        if queries.following():
+
+            # get all images form communities user is following
+            images = queries.followingcommunities()
+            if images:
+                return render_template("index.html",database = images)
+
+        # if user is not following communities, get all images from communities
         return render_template("index.html", database = image_paths)
 
+        # calls search function and renders results
         return render_template("search.html", resultaat = search())
     else:
         return render_template("index.html",database = image_paths)
 
-
+# search function
 def search():
     if request.method == "POST":
+
+        # queries database for results and returns that result
         resultaat = queries.searching()
         return resultaat
 
-
+# lists all communities
 @app.route("/communities", methods=["GET", "POST"])
 def communities():
+
+    # gets information about all communities
     result = queries.allcommunities()
     if not result:
+
+        # notify user if there are no communities availible
         flash('No communities available')
         return render_template("index.html")
 
+    # shows user results
     else:
         return render_template("communities.html", result = result)
 
+# creates community
 @login_required
 @app.route("/create", methods=["GET", "POST"])
 def create():
 
+    # checks request method
     if request.method == "GET":
         return render_template("create.html")
 
@@ -161,6 +176,7 @@ def create():
 
     return render_template("index.html")
 
+# upload images to site
 @login_required
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
@@ -190,9 +206,10 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+            # get path of file
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            # Insert into database.
 
+            # Insert into database
             queries.uploadimage(path)
 
             return redirect(url_for('uploaded_file',filename=filename))
@@ -200,16 +217,19 @@ def upload():
     else:
         return render_template("upload.html")
 
+# upload file to local storage
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
+# redirects user to our homepage
 @app.route("/")
 def homepage():
     "startpagina"
     return render_template("index.html")
 
+# shows user profile
 @login_required
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -224,7 +244,7 @@ def profile():
     #if not, redirect to create profile page
     return redirect(url_for("newprofile"))
 
-
+# lets user create profile
 @login_required
 @app.route("/newprofile", methods=["GET", "POST"])
 def newprofile():
@@ -246,14 +266,17 @@ def newprofile():
             flash('Please enter a discription')
             return render_template("newprofile.html")
 
+        # add profile to database
         queries.saveprofile()
 
+        # gets profile from databse
         profiel = queries.profilelookup()
 
         return render_template("profile.html", profiel = profiel[0])
 
     return render_template("newprofile.html")
 
+# lets user edit their profile
 @login_required
 @app.route("/editprofile", methods=["GET", "POST"])
 def editprofile():
@@ -275,47 +298,57 @@ def editprofile():
             flash('Please enter a discription')
             return render_template("editprofile.html")
 
+        # updates profile in database
         queries.updateprofile()
 
+        # gets profile from database
         profiel = queries.profilelookup()
 
         return render_template("profile.html", profiel = profiel[0])
 
     return render_template("editprofile.html")
 
+# lets user change password
 @login_required
 @app.route("/password", methods=["GET", "POST"])
 def password():
 
     if request.method == "POST":
 
+        # ensure old password is enterd
         if not request.form.get("password"):
             flash('Please enter your current password')
             return render_template("password.html")
 
+        # ensure new password is entered
         if not request.form.get("new"):
             flash('Please enter your new password')
             return render_template("password.html")
 
+        # ensure password check is entered
         if not request.form.get("rnew"):
             flash('Please enter your retyped new password')
             return render_template("password.html")
 
+        # get old password hash for check
         foundpassword = queries.gethash()
 
+        # checks if old password is correct
         if not pwd_context.verify(request.form.get("password"), foundpassword[0]["hash"]):
             flash('Your entered current password did not match with the one in our database')
             return render_template("password.html")
 
+        # updates password in database
         queries.updatepassword()
 
         flash('Password succesfuly changed')
 
+        # sends user back to homepage
         return render_template("index.html")
 
     return render_template("password.html")
 
-
+# logs in user
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in."""
@@ -354,23 +387,51 @@ def login():
     else:
         return render_template("login.html")
 
+# image page
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+
+    # checks method
     if request.method == "POST":
+
+        # gets path of image that is clicked
         image_path = request.form.get("image_btn")
-        return render_template("images.html", image_path=image_path)
 
-    if request.method == "GET":
-
+        # saves comment on image if comment is submitted
         if request.form.get("comment"):
-            queries.comment()
+            queries.comment(image_path)
 
-        comments = queries.selectcomment()
+        # checks if user has liked the image
+        likecheck = queries.likecheck(image_path)
 
-        return render_template("images.html", comments = comments, image_path=image_path)
+        # gets nr of likes for image
+        likes = queries.imagelikes(image_path)
 
+        # gets all comments for image
+        comments = queries.selectcomment(image_path)
+        return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
 
+        # lets user like the image
+        if request.form['like'] == 'like':
+            queries.like(image_path)
+
+            # update likes in database
+            queries.likes(1, image_path)
+
+            flash('liked')
+            return render_template("community.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
+
+        # if user has liked already, unlike
+        elif request.form['like'] == "unlike":
+            queries.unlike(image_path)
+
+            # updates likes in database
+            queries.likes(-1, image_path)
+            flash("removed from likes")
+            return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+
+# page to look up gifs
 @login_required
 @app.route("/gifs", methods=["GET", "POST"])
 def gifs():
@@ -396,7 +457,7 @@ def gifs():
 
 
 
-
+# logs out user
 @app.route("/logout")
 def logout():
     """Log user out."""
@@ -407,21 +468,26 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
-
+# community page
 @login_required
 @app.route("/community", methods=["GET", "POST"] )
 def community():
+
+    # gets images, community info and checks if user is following
     followcheck = queries.followcheck()
     images = queries.communityimagepath()
     communityinfo = queries.communityinfo()
-    if request.method == 'POST':
-        followcheck = queries.followcheck()
 
+
+    if request.method == 'POST':
+
+        # lets user follow the community
         if request.form['follow'] == 'follow':
             queries.follow()
             flash('You are now following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
+        # if user is already following, unfollow the user
         elif request.form['follow'] == "unfollow":
             queries.unfollow()
             flash("You are no longer following this community")
