@@ -432,6 +432,7 @@ def images():
 
         # gets nr of likes for image
         likes = queries.imagelikes(image_path)
+        print(likes)
 
         # gets all comments for image
         comments = queries.selectcomment(image_path)
@@ -479,7 +480,6 @@ def gifs():
         while i < len(api_response.data):
             gifimages.append(api_response.data[i].images.original.url)
             i = i + 1
-            print (gifimages)
 
         return render_template("loadedgifs.html", gifimages = gifimages)
 
