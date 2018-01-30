@@ -357,6 +357,9 @@ def login():
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+    if request.method == "POST":
+        image_path = request.form.get("image_btn")
+        return render_template("images.html", image_path=image_path)
 
     if request.method == "GET":
 
@@ -364,11 +367,8 @@ def images():
             queries.comment()
 
         comments = queries.selectcomment()
-        if comments:
-            print(comments)
-        else:
-            print("go fuck yourself")
-        return render_template("images.html", comments = comments)
+
+        return render_template("images.html", comments = comments, image_path=image_path)
 
 
 @login_required
@@ -392,6 +392,7 @@ def gifs():
         return render_template("loadedgifs.html", api_response = api_response["data"][0]["embed_url"])
 
     return render_template("gifs.html")
+
 
 
 
