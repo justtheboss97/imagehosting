@@ -342,9 +342,15 @@ def login():
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+    if request.method == "POST":
+        image_path = request.form.get("image_btn")
+        return render_template("images.html", image_path=image_path)
 
-    if request.method == "GET":
+    else:
+        print('doei')
+
         return render_template("images.html")
+
 
 @app.route("/logout")
 def logout():
