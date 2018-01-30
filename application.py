@@ -5,6 +5,7 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 from passlib.context import CryptContext
+import requests
 import datetime
 from helpers import *
 import queries
@@ -441,16 +442,20 @@ def gifs():
         api_instance = giphy_client.DefaultApi()
         api_key = 'OG1gYfijbQKdvRqS8I46Wgi7IQBwec0H'
         q = request.form.get("gif")
-        limit = 1
+        limit = 5
         offset = 0
         rating = 'g'
         lang = 'en'
         fmt = 'json'
+        i = 0
+        gifimages = []
 
         api_response = api_instance.gifs_search_get(api_key, q, limit=limit, offset=offset, rating=rating, lang=lang, fmt=fmt)
-        pprint(api_response)
+        while i < len(api_response.data):
+            gifimages.append(api_response.data[i].images.original.url)
+            i = i + 1
 
-        return render_template("loadedgifs.html", api_response = api_response["data"][0]["embed_url"])
+        return render_template("loadedgifs.html", gifimages = gifimages)
 
     return render_template("gifs.html")
 
