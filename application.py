@@ -104,7 +104,12 @@ def index():
     # Import image path from databse.
     image_paths = queries.imagepath()
 
-    if request.method == "POST":
+    if request.method == "GET":
+        if queries.following:
+            images = queries.followingcommunities()
+            print(images)
+            return render_template("index.html",database = image_paths)
+
         return render_template("index.html", database = image_paths)
 
         return render_template("search.html", resultaat = search())
@@ -189,12 +194,7 @@ def upload():
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # Insert into database.
 
-            user = queries.select("users", session["user_id"])
-            community = queries.select("communities", request.form.get("community upload"))
-            queries.insert("images", (user[0]["username"], session["user_id"], community[0]["name"], community[0]["id"], request.form.get("title"), request.form.get("description"), path))
-
             queries.uploadimage(path)
-
 
             return redirect(url_for('uploaded_file',filename=filename))
 
@@ -358,17 +358,19 @@ def login():
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+    if request.method == "POST":
+        image_path = request.form.get("image_btn")
+        return render_template("images.html", image_path=image_path)
 
     if request.method == "GET":
-        '''
-        comments = db.execute("SELECT comment FROM comments WHERE imageid = :imageid", imageid = )
 
-        db.execute("SELECT path FROM images WHERE id= :id", id = )
-        '''
+        if request.form.get("comment"):
+            queries.comment()
 
-        return render_template("images.html", comments = comments)
+        comments = queries.selectcomment()
 
-    return render_template("images.html")
+        return render_template("images.html", comments = comments, image_path=image_path)
+
 
 @login_required
 @app.route("/gifs", methods=["GET", "POST"])
@@ -399,6 +401,7 @@ def gifs():
 
 
 
+
 @app.route("/logout")
 def logout():
     """Log user out."""
@@ -408,3 +411,29 @@ def logout():
 
     # redirect user to login form
     return redirect(url_for("login"))
+
+
+@login_required
+@app.route("/community", methods=["GET", "POST"] )
+def community():
+    followcheck = queries.followcheck()
+    images = queries.communityimagepath()
+    communityinfo = queries.communityinfo()
+    if request.method == 'POST':
+        followcheck = queries.followcheck()
+
+        if request.form['follow'] == 'follow':
+            queries.follow()
+            flash('You are now following this community!')
+            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+        elif request.form['follow'] == "unfollow":
+            queries.unfollow()
+            flash("You are no longer following this community")
+            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+    else:
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
