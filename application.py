@@ -398,37 +398,38 @@ def images():
 
         # gets path of image that is clicked
         image_path = request.form.get("image_btn")
+        print(image_path)
 
         # saves comment on image if comment is submitted
         if request.form.get("comment"):
-            queries.comment(image_path)
+            queries.comment()
 
         # checks if user has liked the image
-        likecheck = queries.likecheck(image_path)
+        likecheck = queries.likecheck()
 
         # gets nr of likes for image
-        likes = queries.imagelikes(image_path)
-
+        likes = queries.imagelikes()
+        print(likes)
         # gets all comments for image
-        comments = queries.selectcomment(image_path)
+        comments = queries.selectcomment()
         return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
 
         # lets user like the image
         if request.form['like'] == 'like':
-            queries.like(image_path)
+            queries.like()
 
             # update likes in database
-            queries.likes(1, image_path)
+            queries.likes(1)
 
             flash('liked')
             return render_template("community.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
 
         # if user has liked already, unlike
         elif request.form['like'] == "unlike":
-            queries.unlike(image_path)
+            queries.unlike()
 
             # updates likes in database
-            queries.likes(-1, image_path)
+            queries.likes(-1)
             flash("removed from likes")
             return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
 
