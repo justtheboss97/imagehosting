@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Gifs
+{% endblock %}
+
+{% block main %}
+        {% for response in api_response %}
+            {{ response.url }}
+        {% endfor %}
+{% endblock %}

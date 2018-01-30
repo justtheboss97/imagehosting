@@ -1,0 +1,34 @@
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ communityinfo.name }}
+{% endblock %}
+
+{% block main %}
+    <form action="{{ url_for('community') }}" method="post">
+        <fieldset>
+          <div style="float:left;">
+            <h1>{{ communityinfo.name }}</h1>
+            <p>{{ communityinfo.desc }}</p>
+          </div>
+          <div style="float:right;">
+            {% if not followcheck %}
+            <button type="submit" name="follow" value="follow">follow</button>
+            {% else %}
+            <button type="submit" name="follow" value="unfollow">unfollow</button>
+            {% endif %}
+          </div>
+            <div class="row">
+              {% for image in database %}
+              <div class="column">
+                <a href="images"></a>
+                <img src= {{image.path}}>
+              </div>
+              {% endfor %}
+            </div>
+        </fieldset>
+    </form>
+
+
+{% endblock %}
