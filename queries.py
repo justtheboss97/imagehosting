@@ -88,4 +88,26 @@ def communityimagepath():
 def communityinfo():
     return db.execute("SELECT * FROM communities WHERE id = :id", id = 8)
 
+# checks if the user follows a community
+def followcheck():
+    return db.execute("SELECT * FROM members WHERE communityid = :communityid AND userid = :userid", communityid = 8, userid = session["user_id"])
 
+# checks if user is following communites
+def following():
+    return db.execute("SELECT communityid FROM members WHERE userid = :userid", userid = session["user_id"])
+
+# follows the user to the community
+def follow():
+    return db.execute("INSERT INTO members (communityid, userid) VALUES(:communityid, :userid)", communityid = 8, userid = session["user_id"])
+
+# unfollows user from community
+def unfollow():
+    return db.execute("DELETE FROM members WHERE communityid = :communityid AND userid = :userid", communityid = 8, userid= session["user_id"])
+
+# likes the image
+def like():
+    likes = db.execute("SELECT likes FROM images WHERE images = :image")
+
+# gives all images paths of communities user follows
+def followingcommunities():
+    return following()

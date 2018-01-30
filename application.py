@@ -99,6 +99,11 @@ def index():
     image_paths = queries.imagepath()
 
     if request.method == "POST":
+        if queries.following:
+            images = queries.followingcommunities()
+            print(images)
+            return render_template("index.html",database = image_paths)
+
         return render_template("index.html", database = image_paths)
 
         return render_template("search.html", resultaat = search())
@@ -361,9 +366,28 @@ def logout():
     # redirect user to login form
     return redirect(url_for("login"))
 
-@app.route("/community")
+
+@login_required
+@app.route("/community", methods=["GET", "POST"] )
 def community():
+    followcheck = queries.followcheck()
     images = queries.communityimagepath()
     communityinfo = queries.communityinfo()
-    print(communityinfo)
-    return render_template("community.html", database = images, communityinfo = communityinfo[0])
+    if request.method == 'POST':
+        followcheck = queries.followcheck()
+
+        if request.form['follow'] == 'follow':
+            queries.follow()
+            flash('You are now following this community!')
+            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+        elif request.form['follow'] == "unfollow":
+            queries.unfollow()
+            flash("You are no longer following this community")
+            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
+    else:
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+

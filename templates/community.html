@@ -6,13 +6,19 @@
 {% endblock %}
 
 {% block main %}
-    <form action="{{ url_for('index') }}" method="post">
+    <form action="{{ url_for('community') }}" method="post">
         <fieldset>
-              <div class="form-group">
-                <button type="submit" name="follow" style="align-right">Follow </button>
-              </div>
+          <div style="float:left;">
             <h1>{{ communityinfo.name }}</h1>
             <p>{{ communityinfo.desc }}</p>
+          </div>
+          <div style="float:right;">
+            {% if not followcheck %}
+            <button type="submit" name="follow" value="follow">follow</button>
+            {% else %}
+            <button type="submit" name="follow" value="unfollow">unfollow</button>
+            {% endif %}
+          </div>
             <div class="row">
               {% for image in database %}
               <div class="column">
