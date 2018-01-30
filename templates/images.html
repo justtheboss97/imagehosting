@@ -27,6 +27,11 @@
   <div class="form-group">
     <button type="submit" name="comment">Post comment </button>
   </div>
+	{% if not followcheck %}
+	<button type="submit" name="follow" value="follow">follow</button>
+	{% else %}
+	<button type="submit" name="follow" value="unfollow">unfollow</button>
+	{% endif %}
 
   {% for comment in comments %}
 	<h3>{{ comment.id }} said:</h3>

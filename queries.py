@@ -110,7 +110,8 @@ def like():
 
 # gives all images paths of communities user follows
 def followingcommunities():
-    return following()
+    communities = following()
+    return communities
 
 # insert comment into database
 def comment():

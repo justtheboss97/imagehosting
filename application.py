@@ -103,7 +103,7 @@ def index():
     # Import image path from databse.
     image_paths = queries.imagepath()
 
-    if request.method == "POST":
+    if request.method == "GET":
         if queries.following:
             images = queries.followingcommunities()
             print(images)
