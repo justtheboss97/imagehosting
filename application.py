@@ -10,6 +10,11 @@ from helpers import *
 import queries
 import os
 import random
+import json, urllib
+import time
+import giphy_client
+from giphy_client.rest import ApiException
+from pprint import pprint
 
 #Sets upload folders and allowed extensions
 UPLOAD_FOLDER = 'static/image_database'
@@ -360,9 +365,32 @@ def images():
         db.execute("SELECT path FROM images WHERE id= :id", id = )
         '''
 
-        return render_template("images.html", comments)
+        return render_template("images.html", comments = comments)
 
     return render_template("images.html")
+
+@login_required
+@app.route("/gifs", methods=["GET", "POST"])
+def gifs():
+
+    if request.method == "POST":
+        # create an instance of the API class
+        api_instance = giphy_client.DefaultApi()
+        api_key = 'OG1gYfijbQKdvRqS8I46Wgi7IQBwec0H'
+        q = request.form.get("gif")
+        limit = 1
+        offset = 0
+        rating = 'g'
+        lang = 'en'
+        fmt = 'json'
+
+        api_response = api_instance.gifs_search_get(api_key, q, limit=limit, offset=offset, rating=rating, lang=lang, fmt=fmt)
+        pprint(api_response)
+
+        #return render_template("loadedgifs.html", api_response = api_response["data"][0][bitly_url])
+
+    return render_template("gifs.html")
+
 
 
 
