@@ -106,6 +106,10 @@ def index():
     image_paths = queries.imagepath()
 
     if request.method == "GET":
+        if request.form.get("opdracht"):
+
+            # calls search function and renders results
+            return render_template("search.html", resultaat = search())
 
         # checks if user is following communities
         if queries.following():
@@ -118,8 +122,6 @@ def index():
         # if user is not following communities, get all images from communities
         return render_template("index.html", database = image_paths)
 
-        # calls search function and renders results
-        return render_template("search.html", resultaat = search())
     else:
         return render_template("index.html",database = image_paths)
 
@@ -210,14 +212,15 @@ def upload():
 
             # get path of file
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
+            print(request.form.get("community upload"))
             # Insert into database
             queries.uploadimage(path)
 
             return redirect(url_for('uploaded_file',filename=filename))
 
     else:
-        return render_template("upload.html")
+        result = queries.allcommunities()
+        return render_template("upload.html", result = result)
 
 # upload file to local storage
 @app.route('/uploads/<filename>')
@@ -497,26 +500,31 @@ def logout():
 def community():
 
     # gets images, community info and checks if user is following
-    followcheck = queries.followcheck()
-    images = queries.communityimagepath()
-    communityinfo = queries.communityinfo()
-
+    communityid = queries.getcommintyid()
+    followcheck = queries.followcheck(communityid)
+    images = queries.communityimagepath(communityid)
+    communityinfo = queries.communityinfo(communityid)
+    print("hier 1")
 
     if request.method == 'POST':
-
+        print("hier 2")
         # lets user follow the community
-        if request.form['follow'] == 'follow':
-            queries.follow()
+        if request.form.get('follow'):
+            print("hier 5")
+            queries.follow(communityid)
             flash('You are now following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
-        if request.form["follow"] == "unfollow":
-            queries.unfollow()
-            flash('You are no longer following this community!')
-            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
-
+        if request.form.get("unfollow"):
+            print("hier 6")
+            queries.unfollow(communityid)
+            flash("You are no longer following this community")
+            return render_template("community.html",database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+        print("hier 3")
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
     else:
         return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
 
