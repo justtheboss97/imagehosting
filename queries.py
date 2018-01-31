@@ -110,7 +110,7 @@ def like(image_path):
 
 # removes like from database
 def unlike(image_path):
-    return db.execute("DELETE FROM likes WHERE image = :image, id = :id", image = image_path, id = session["user_id"])
+    return db.execute("DELETE FROM likes WHERE image = :image AND id = :id", image = image_path, id = session["user_id"])
 
 # updates likes for images
 def likes(x, image_path):
