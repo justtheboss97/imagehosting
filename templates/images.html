@@ -26,7 +26,6 @@
   <input type="submit" value="unlike" name="unlike">
   {% endif %}
 	<p>{{ likes.likes }} likes</p>
-</div>
 
   <div class="form-group">
     <label for="comment">Comment <span></span></label>
@@ -40,7 +39,7 @@
 	<h3>{{ comment.id }} said:</h3>
 	<p>{{ comment.comment }}</p>
   {% endfor %}
-
+</div>
 </form>
 {% endblock %}
 

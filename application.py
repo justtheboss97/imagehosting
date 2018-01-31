@@ -112,13 +112,14 @@ def index():
             # calls search function and renders results
             return render_template("search.html", resultaat = search())
 
-        # checks if user is following communities
-        if queries.following():
+        if session:
+            # checks if user is following communities
+            if queries.following():
 
-            # get all images form communities user is following
-            images = queries.followingcommunities()
-            if images:
-                return render_template("index.html",database = images)
+                # get all images form communities user is following
+                images = queries.followingcommunities()
+                if images:
+                    return render_template("index.html",database = images)
 
         # if user is not following communities, get all images from communities
         return render_template("index.html", database = image_paths)
@@ -232,8 +233,7 @@ def uploaded_file(filename):
 # redirects user to our homepage
 @app.route("/")
 def homepage():
-    "startpagina"
-    return render_template("index.html")
+    return redirect(url_for("index"))
 
 # shows user profile
 @login_required
@@ -442,7 +442,7 @@ def images():
     if request.method == "POST":
         if request.form.get("comment"):
             queries.comment(image_path)
-            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return redirect(url_for("images"))
 
         print("hier 1")
         # lets user like the image
@@ -453,7 +453,7 @@ def images():
             # update likes in database
             queries.likes(1, image_path)
             flash('liked')
-            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return redirect(url_for("images"))
 
         # if user has liked already, unlike
         if request.form.get('unlike'):
@@ -462,7 +462,7 @@ def images():
             # updates likes in database
             queries.likes(-1, image_path)
             flash("removed from likes")
-            return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return redirect(url_for("images"))
 
     return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
@@ -525,14 +525,14 @@ def community():
         if request.form.get('follow'):
             queries.follow(communityid)
             flash('You are now following this community!')
-            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
-
+            return redirect(url_for("community"))
 
         if request.form.get("unfollow"):
             queries.unfollow(communityid)
             flash("You are no longer following this community")
-            return render_template("community.html",database = images, communityinfo = communityinfo[0], followcheck = followcheck)
-        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+            return redirect(url_for("community"))
+
+        return render_template("community.html",database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
     else:
         return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
