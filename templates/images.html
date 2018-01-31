@@ -21,16 +21,16 @@
 </div>
 <div align="left">
   <p>Uploaded by {{ user }} in community {{ community }}</p>
-	{% if not likecheck %}
-	<button type="submit" name="like">like</button>
-	{% else %}
-	<button type="submit" name="unlike">like</button>
-	{% endif %}
+  {% if not likecheck %}
+  <input type="submit" value="like" name="like">
+  {% else %}
+  <input type="submit" value="unlike" name="unlike">
+  {% endif %}
 	<p>{{ likes.likes }} likes</p>
 </div>
 
   <div class="form-group">
-    <label for="description">Comment <span></span></label>
+    <label for="comment">Comment <span></span></label>
     <textarea type="text" name="comment" id="comment" class="form-controll" style="height:200px;"id="textbox" ></textarea/>
   </div>
   <div class="form-group">
