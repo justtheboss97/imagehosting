@@ -161,3 +161,7 @@ def commentje():
 def likje():
     return db.execute("SELECT image FROM likes WHERE id = :id", id = session["user_id"])
 
+# gets image title
+def title(image_path):
+    return db.execute("SELECT title FROM images WHERE path = :path", path = image_path)
+

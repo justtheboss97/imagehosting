@@ -5,20 +5,19 @@
 {% endblock %}
 
 {% block main %}
-<form action="{{ url_for('images') }}" method="get">
+<form action="{{ url_for('images') }}" method="post">
 
 <div class="row">
   <div class="col-md-4">
     <div class="thumbnail">
-      <a href="/uploads/{{ image_path }}">
-        <img src=" {{ image_path }}" alt=" pussy" style="width:100%">
+        <img src=" {{ image_path }}" style="width:100%">
         <div class="caption">
-          <p>Cute kitty</p>
+          <p>{{ title.title }}</p>
         </div>
-      </a>
     </div>
   </div>
 </div>
+
 <div align="left">
   <p>Uploaded by {{ user }} in community {{ community }}</p>
   {% if not likecheck %}

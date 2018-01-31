@@ -430,36 +430,38 @@ def images():
     # gets nr of likes for image
     likes = queries.imagelikes(image_path)
 
-    # gets all comments for image
+    # gets all inormation about image
+    title = queries.title(image_path)
     comments = queries.selectcomment(image_path)
     userinfo = queries.selectuser()
     communityupload = queries.getcommunityupload(image_path)
 
-    if request.form.get("comment"):
-        queries.comment(image_path)
-        return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+    if request.method == "POST":
+        if request.form.get("comment"):
+            queries.comment(image_path)
+            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-    print("hier 1")
-    # lets user like the image
-    if request.form.get('like'):
-        print("hier 2")
-        queries.like(image_path)
+        print("hier 1")
+        # lets user like the image
+        if request.form.get("like"):
+            print("hier 2")
+            queries.like(image_path)
 
-        # update likes in database
-        queries.likes(1, image_path)
-        flash('liked')
-        return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+            # update likes in database
+            queries.likes(1, image_path)
+            flash('liked')
+            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-    # if user has liked already, unlike
-    if request.form.get('unlike'):
-        queries.unlike(image_path)
+        # if user has liked already, unlike
+        if request.form.get('unlike'):
+            queries.unlike(image_path)
 
-        # updates likes in database
-        queries.likes(-1, image_path)
-        flash("removed from likes")
-        return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+            # updates likes in database
+            queries.likes(-1, image_path)
+            flash("removed from likes")
+            return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-    return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
+    return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
 
 @login_required
