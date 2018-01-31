@@ -47,7 +47,18 @@
                                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                                <li>
+                                <div class="dropdown">
+                                    <button class="dropbtn">Profile</button>
+                                    <div class="dropdown-content">
+                                        <a href="{{ url_for('profile') }}">My profile</a>
+                                        <a href="{{ url_for('likes') }}">My likes</a>
+                                        <a href="{{ url_for('comments') }}">My comments</a>
+                                        <a href="{{ url_for('editprofile') }}">Edit profile</a>
+                                        <a href="{{ url_for('password') }}">Change password</a>
+                                    </div>
+                                </div>
+                                </li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('upload') }}">Upload</a></li>

@@ -7,15 +7,19 @@
 {% block main %}
     <form action="{{ url_for('profile') }}" method="post">
 	    <link href='profile.css' rel='profile' type='text/css'>
-	    <div class="card">
-  		    <h1>{{profiel.name}}</h1>
-  		    <p class="title">{{profiel.description}}</p>
-  		    <p>{{profiel.birthday}}</p>
-  		    <a href="editprofile">Edit Profile</a>
-  		    <a href="password">Edit Password</a>
-  		    <a href="likes">See your likes</a>
-  		    <a href="comments">See your comments</a>
-  		</div>
+	    <body>
+	    <div id="main-content">
+		<div id="left-column">
+			<div id="logo">
+			Welcome to {{profiel.name}}'s Webpage<br>
+			</div>
+			<div class="box">
+        		<h4>About me: </h4>
+        		<p>{{profiel.description}}</p><br>
+        		<p>My birthday is: {{profiel.birthday}}</p>
+			</div>
+		</div>
+	</body>
   	</form>
 
 {% endblock %}

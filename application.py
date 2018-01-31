@@ -105,6 +105,10 @@ def index():
     image_paths = queries.imagepath()
 
     if request.method == "GET":
+        if request.form.get("opdracht"):
+
+            # calls search function and renders results
+            return render_template("search.html", resultaat = search())
 
         # checks if user is following communities
         if queries.following():
@@ -117,8 +121,6 @@ def index():
         # if user is not following communities, get all images from communities
         return render_template("index.html", database = image_paths)
 
-        # calls search function and renders results
-        return render_template("search.html", resultaat = search())
     else:
         return render_template("index.html",database = image_paths)
 
@@ -209,14 +211,15 @@ def upload():
 
             # get path of file
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
+            print(request.form.get("community upload"))
             # Insert into database
             queries.uploadimage(path)
 
             return redirect(url_for('uploaded_file',filename=filename))
 
     else:
-        return render_template("upload.html")
+        result = queries.allcommunities()
+        return render_template("upload.html", result = result)
 
 # upload file to local storage
 @app.route('/uploads/<filename>')
@@ -519,9 +522,9 @@ def community():
             # updates likes in database
             queries.likes(-1, image_path)
             flash("removed from likes")
-            return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
 
     else:
-        return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+        return render_template("community.html",  database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
