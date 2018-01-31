@@ -8,11 +8,15 @@
 
     <table style="width: 100%; padding: 15px;">
     <tr style = "background-color: ##CEF6E3; color: #537fbe;">
-    <th>Gifs</th>
+    <div class = "column">
 
     {% for gif in gifimages %}
 
-        <img src = "{{gif}}" alt = "plaatje">
+        <div class = "column">
+            <img src = "{{gif}}" alt = "plaatje"><br>
+        </div>
+
     {% endfor %}
+    </div>
 
 {% endblock %}

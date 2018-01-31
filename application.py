@@ -410,7 +410,7 @@ def comments():
 
     if request.method == "GET":
 
-        commentjes = db.execute("SELECT comment FROM comment WHERE id = :id", id = session["user_id"])
+        commentjes = db.execute("SELECT comment, image FROM comment WHERE id = :id", id = session["user_id"])
 
         return render_template("comments.html", commentjes = commentjes)
 
