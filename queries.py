@@ -81,28 +81,28 @@ def updatepassword():
 
 # get image path for all images
 # this is still in beta
-def communityimagepath():
-    return db.execute("SELECT path FROM images WHERE communityid = :communityid", communityid = 8)
+def communityimagepath(communityid):
+    return db.execute("SELECT path FROM images WHERE communityid = :communityid", communityid = communityid[0]["id"])
 
 # gets all info of community
-def communityinfo():
-    return db.execute("SELECT * FROM communities WHERE id = :id", id = 8)
+def communityinfo(communityid):
+    return db.execute("SELECT * FROM communities WHERE id = :id", id =  communityid[0]["id"])
 
 # checks if the user follows a community
-def followcheck():
-    return db.execute("SELECT * FROM members WHERE communityid = :communityid AND userid = :userid", communityid = 8, userid = session["user_id"])
+def followcheck(communityid):
+    return db.execute("SELECT * FROM members WHERE communityid = :communityid AND userid = :userid", communityid =  communityid[0]["id"], userid = session["user_id"])
 
 # checks if user is following communites
 def following():
     return db.execute("SELECT communityid FROM members WHERE userid = :userid", userid = session["user_id"])
 
 # follows the user to the community
-def follow():
-    return db.execute("INSERT INTO members (communityid, userid) VALUES(:communityid, :userid)", communityid = 8, userid = session["user_id"])
+def follow(communityid):
+    return db.execute("INSERT INTO members (communityid, userid) VALUES(:communityid, :userid)", communityid =  communityid[0]["id"], userid = session["user_id"])
 
 # unfollows user from community
-def unfollow():
-    return db.execute("DELETE FROM members WHERE communityid = :communityid AND userid = :userid", communityid = 8, userid= session["user_id"])
+def unfollow(communityid):
+    return db.execute("DELETE FROM members WHERE communityid = :communityid AND userid = :userid", communityid =  communityid[0]["id"], userid= session["user_id"])
 
 # likes the image
 def like(image_path):
@@ -143,3 +143,6 @@ def comment(image_path):
 # select all comments form image
 def selectcomment(image_path):
     return db.execute("SELECT comment, id FROM comment WHERE image = :image", image = image_path)
+
+def getcommintyid():
+    return db.execute("SELECT id FROM communities WHERE name = :name", name = request.form.get("community_btn"))

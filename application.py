@@ -503,25 +503,31 @@ def logout():
 def community():
 
     # gets images, community info and checks if user is following
-    followcheck = queries.followcheck()
-    images = queries.communityimagepath()
-    communityinfo = queries.communityinfo()
-
+    communityid = queries.getcommintyid()
+    followcheck = queries.followcheck(communityid)
+    images = queries.communityimagepath(communityid)
+    communityinfo = queries.communityinfo(communityid)
+    print("hier 1")
 
     if request.method == 'POST':
-
+        print("hier 2")
         # lets user follow the community
-        if request.form['follow'] == 'follow':
-            queries.follow()
+        if request.form.get('follow'):
+            print("hier 5")
+            queries.follow(communityid)
             flash('You are now following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
             # updates likes in database
-            queries.likes(-1, image_path)
-            flash("removed from likes")
-            return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+        if request.form.get("unfollow"):
+            print("hier 6")
+            queries.unfollow(communityid)
+            flash("You are no longer following this community")
+            return render_template("community.html",database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+        print("hier 3")
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
 
     else:
-        return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
