@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<form action="{{ url_for('images') }}" method="get">
+<form action="{{ url_for('images') }}" method="post">
 
 <div class="row">
   <div class="col-md-4">
@@ -25,6 +25,7 @@
 	<button type="submit" name="like">like</button>
 	{% else %}
 	<button type="submit" name="unlike">like</button>
+	{% endif %}
 	{% endif %}
 	<p>{{ likes.likes }} likes</p>
 </div>
