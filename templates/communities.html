@@ -14,7 +14,8 @@
         </tr>
         {% for community in result %}
             <tr>
-                <td>{{ community.name }}</td>
+                <td> <form action="{{ url_for('community') }}" method="post" id='communityform' name='{{ community.name }}'>
+                <input value='{{ community.name }}' name='community_btn' type="text"> </form> {{ community.name }} </td>
                 <td>{{ community.private }}</td>
                 <td>{{ community.desc }}</td>
             </tr>
