@@ -105,25 +105,25 @@ def unfollow():
     return db.execute("DELETE FROM members WHERE communityid = :communityid AND userid = :userid", communityid = 8, userid= session["user_id"])
 
 # likes the image
-def like():
-    return db.execute("INSERT INTO likes (image, id) VALUES(:image, :id)", image = request.form.get("image_btn"), id = session["user_id"])
+def like(image_path):
+    return db.execute("INSERT INTO likes (image, id) VALUES(:image, :id)", image = image_path, id = session["user_id"])
 
 # removes like from database
-def unlike():
-    return db.execute("DELETE FROM likes WHERE image = :image, id = :id", image = request.form.get("image_btn"), id = session["user_id"])
+def unlike(image_path):
+    return db.execute("DELETE FROM likes WHERE image = :image, id = :id", image = image_path, id = session["user_id"])
 
 # updates likes for images
-def likes(x):
-    like = imagelikes()
-    return db.execute("UPDATE images SET likes = :likes WHERE path = :path", likes = like[0]["likes"] + x, path = request.form.get("image_btn"))
+def likes(x, image_path):
+    like = imagelikes(image_path)
+    return db.execute("UPDATE images SET likes = :likes WHERE path = :path", likes = like[0]["likes"] + x, path = image_path)
 
 # gets nr of likes for image
-def imagelikes():
-    return db.execute("SELECT likes FROM images WHERE path = :path", path = request.form.get("image_btn"))
+def imagelikes(image_path):
+    return db.execute("SELECT likes FROM images WHERE path = :path", path =image_path)
 
 # checks if user has liked image
-def likecheck():
-    return db.execute("SELECT * FROM likes WHERE image = :image AND id = :id", image = request.form.get("image_btn"), id = session["user_id"])
+def likecheck(image_path):
+    return db.execute("SELECT * FROM likes WHERE image = :image AND id = :id", image = image_path, id = session["user_id"])
 
 # gives all images paths of communities user follows
 def followingcommunities():
@@ -137,9 +137,14 @@ def followingcommunities():
     return images
 
 # insert comment into database
-def comment():
-    return db.execute("INSERT INTO comment (id, image, comment) VALUES (:id, :image, :comment)", id = session["user_id"], image = request.form.get("image_btn"), comment = request.form.get("comment"))
+def comment(image_path):
+    return db.execute("INSERT INTO comment (id, image, comment) VALUES (:id, :image, :comment)", id = session["user_id"], image = image_path, comment = request.form.get("comment"))
 
 # select all comments form image
-def selectcomment():
-    return db.execute("SELECT comment, id FROM comment WHERE image = :image", image = request.form.get("image_btn"))
+def selectcomment(image_path):
+    return db.execute("SELECT comment, id FROM comment WHERE image = :image", image = image_path)
+
+# gets community where image is uploaded
+def getcommunityupload(image_path):
+    commid = db.execute("SELECT communityid FROM images WHERE path = :path", path = image_path)
+    return db.execute("SELECT name FROM communities WHERE id = :id", id = commid[0]["communityid"])

@@ -16,6 +16,7 @@ import time
 import giphy_client
 from giphy_client.rest import ApiException
 from pprint import pprint
+image_path = ""
 
 #Sets upload folders and allowed extensions
 UPLOAD_FOLDER = 'static/image_database'
@@ -416,47 +417,40 @@ def comments():
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+    global image_path
+    if request.form.get("image_btn"):
+        if image_path != request.form.get("image_btn"):
+            image_path = request.form.get("image_btn")
+    likecheck = queries.likecheck(image_path)
 
-    # checks method
-    if request.method == "POST":
+    # gets nr of likes for image
+    likes = queries.imagelikes(image_path)
 
-        # gets path of image that is clicked
-        image_path = request.form.get("image_btn")
-        print(image_path)
+    # gets all comments for image
+    comments = queries.selectcomment(image_path)
+    userinfo = queries.selectuser()
+    communityupload = queries.getcommunityupload(image_path)
 
-        # saves comment on image if comment is submitted
-        if request.form.get("comment"):
-            queries.comment()
+    # lets user like the image
+    if request.form.get('like'):
+        print("hier")
+        queries.like(image_path)
 
-        # checks if user has liked the image
-        likecheck = queries.likecheck()
+        # update likes in database
+        queries.likes(1, image_path)
+        flash('liked')
+        return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-        # gets nr of likes for image
-        likes = queries.imagelikes()
+    # if user has liked already, unlike
+    elif request.form.get('like'):
+        queries.unlike(image_path)
 
+        # updates likes in database
+        queries.likes(-1, image_path)
+        flash("removed from likes")
+        return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-        # gets all comments for image
-        comments = queries.selectcomment()
-        return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
-
-        # lets user like the image
-        if request.form['like'] == 'like':
-            queries.like()
-
-            # update likes in database
-            queries.likes(1)
-            flash('liked')
-            return render_template("images.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
-
-        # if user has liked already, unlike
-        elif request.form['like'] == "unlike":
-            queries.unlike()
-
-            # updates likes in database
-            queries.likes(-1)
-            flash("removed from likes")
-            return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
-
+    return render_template("images.html", community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
 
 @login_required
