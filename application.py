@@ -433,7 +433,7 @@ def images():
 
         # gets nr of likes for image
         likes = queries.imagelikes()
-        print(likes)
+
 
         # gets all comments for image
         comments = queries.selectcomment()
