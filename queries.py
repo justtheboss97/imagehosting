@@ -144,11 +144,24 @@ def comment(image_path):
 def selectcomment(image_path):
     return db.execute("SELECT comment, id FROM comment WHERE image = :image", image = image_path)
 
-
 # gets community where image is uploaded
 def getcommunityupload(image_path):
     commid = db.execute("SELECT communityid FROM images WHERE path = :path", path = image_path)
     return db.execute("SELECT name FROM communities WHERE id = :id", id = commid[0]["communityid"])
 
-def getcommintyid():
-    return db.execute("SELECT id FROM communities WHERE name = :name", name = request.form.get("community_btn"))
+# gets id from community
+def getcommintyid(communitynameglobal):
+    return db.execute("SELECT id FROM communities WHERE name = :name", name = communitynameglobal)
+
+# gets all comments from user
+def commentje():
+    return db.execute("SELECT comment FROM comment WHERE id = :id", id = session["user_id"])
+
+# gets all likes from user
+def likje():
+    return db.execute("SELECT image FROM likes WHERE id = :id", id = session["user_id"])
+
+# gets image title
+def title(image_path):
+    return db.execute("SELECT title FROM images WHERE path = :path", path = image_path)
+

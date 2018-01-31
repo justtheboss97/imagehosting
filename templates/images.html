@@ -10,28 +10,26 @@
 <div class="row">
   <div class="col-md-4">
     <div class="thumbnail">
-      <a href="/uploads/{{ image_path }}">
-        <img src=" {{ image_path }}" alt=" pussy" style="width:100%">
+        <img src=" {{ image_path }}" style="width:100%">
         <div class="caption">
-          <p>Cute kitty</p>
+          <p>{{ title.title }}</p>
         </div>
-      </a>
     </div>
   </div>
 </div>
+
 <div align="left">
   <p>Uploaded by {{ user }} in community {{ community }}</p>
-	{% if not likecheck %}
-	<button type="submit" name="like">like</button>
-	{% else %}
-	<button type="submit" name="unlike">like</button>
-	{% endif %}
-	{% endif %}
+  {% if not likecheck %}
+  <input type="submit" value="like" name="like">
+  {% else %}
+  <input type="submit" value="unlike" name="unlike">
+  {% endif %}
 	<p>{{ likes.likes }} likes</p>
 </div>
 
   <div class="form-group">
-    <label for="description">Comment <span></span></label>
+    <label for="comment">Comment <span></span></label>
     <textarea type="text" name="comment" id="comment" class="form-controll" style="height:200px;"id="textbox" ></textarea/>
   </div>
   <div class="form-group">

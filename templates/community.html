@@ -10,14 +10,14 @@
         <fieldset>
           <div style="float:left;">
             <h1>{{ communityinfo.name }}</h1>
-            <p>{{ communityinfo.desc }}</p>
-          </div>
-          <div style="float:right;">
+            <p>
             {% if not followcheck %}
-            <button type="submit" name="follow">follow</button>
+            <input type="submit" value="follow" name="follow">
             {% else %}
-            <button type="submit" name="unfollow">unfollow</button>
+            <input type="submit" value="unfollow" name="unfollow">
             {% endif %}
+            </p>
+            <p>{{ communityinfo.desc }}</p>
           </div>
             <div class="row">
               {% for image in database %}
