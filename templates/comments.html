@@ -10,9 +10,14 @@
             <th>Comments</th>
         </tr>
         {% for comment in commentjes %}
-            <tr>
                 <td>{{ comment.comment }}</td>
-            </tr>
+                <div class="row">
+                    <div class="thumbnail">
+                      <a href="/uploads/<filename>">
+                        <td><img src=" {{ comment.image }}" alt= "pussy" style="width:20%"></td>
+                      </a>
+                    </div>
+                </div>
         {% endfor %}
     </table>
 {% endblock %}

@@ -85,9 +85,8 @@ main td
 
 /* Comment secion image page */
 html, body {
-  background-color: #0A122A;
+
   font-family: "PT Sans", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
-  color: #555f77;
   -webkit-font-smoothing: antialiased;
 }
 
