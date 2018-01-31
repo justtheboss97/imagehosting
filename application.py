@@ -16,6 +16,8 @@ import time
 import giphy_client
 from giphy_client.rest import ApiException
 from pprint import pprint
+image_path = ""
+communitynameglobal = 0
 
 #Sets upload folders and allowed extensions
 UPLOAD_FOLDER = 'static/image_database'
@@ -398,7 +400,7 @@ def likes():
 
     if request.method == "GET":
 
-        likjes = db.execute("SELECT image FROM likes WHERE id = :id", id = session["user_id"])
+        likjes = queries.likje
 
         return render_template("likes.html", likjes = likjes)
 
@@ -410,7 +412,7 @@ def comments():
 
     if request.method == "GET":
 
-        commentjes = db.execute("SELECT comment FROM comment WHERE id = :id", id = session["user_id"])
+        commentjes = queries.commentje()
 
         return render_template("comments.html", commentjes = commentjes)
 
@@ -419,47 +421,47 @@ def comments():
 @login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
+    global image_path
+    if request.form.get("image_btn"):
+        if image_path != request.form.get("image_btn"):
+            image_path = request.form.get("image_btn")
+    likecheck = queries.likecheck(image_path)
 
-    # checks method
+    # gets nr of likes for image
+    likes = queries.imagelikes(image_path)
+
+    # gets all inormation about image
+    title = queries.title(image_path)
+    comments = queries.selectcomment(image_path)
+    userinfo = queries.selectuser()
+    communityupload = queries.getcommunityupload(image_path)
+
     if request.method == "POST":
-
-        # gets path of image that is clicked
-        image_path = request.form.get("image_btn")
-
-        # saves comment on image if comment is submitted
         if request.form.get("comment"):
             queries.comment(image_path)
+            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-        # checks if user has liked the image
-        likecheck = queries.likecheck(image_path)
-
-        # gets nr of likes for image
-        likes = queries.imagelikes(image_path)
-        print(likes)
-
-        # gets all comments for image
-        comments = queries.selectcomment(image_path)
-        return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
-
+        print("hier 1")
         # lets user like the image
-        if request.form['like'] == 'like':
+        if request.form.get("like"):
+            print("hier 2")
             queries.like(image_path)
 
             # update likes in database
             queries.likes(1, image_path)
-
             flash('liked')
-            return render_template("images.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
+            return render_template("images.html", title = title, community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
         # if user has liked already, unlike
-        elif request.form['like'] == "unlike":
+        if request.form.get('unlike'):
             queries.unlike(image_path)
 
             # updates likes in database
             queries.likes(-1, image_path)
             flash("removed from likes")
-            return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
+    return render_template("images.html", title = title[0], community = communityupload[0]["name"], comments = comments, user = userinfo[0]["username"], image_path=image_path, likecheck = likecheck, likes = likes[0])
 
 
 @login_required
@@ -504,33 +506,32 @@ def logout():
 @login_required
 @app.route("/community", methods=["GET", "POST"] )
 def community():
+    global communitynameglobal
+    if request.form.get("community_btn"):
+        if communitynameglobal != request.form.get("community_btn"):
+            communitynameglobal = request.form.get("community_btn")
 
     # gets images, community info and checks if user is following
-    communityid = queries.getcommintyid()
+    communityid = queries.getcommintyid(communitynameglobal)
     followcheck = queries.followcheck(communityid)
     images = queries.communityimagepath(communityid)
     communityinfo = queries.communityinfo(communityid)
-    print("hier 1")
 
     if request.method == 'POST':
-        print("hier 2")
         # lets user follow the community
         if request.form.get('follow'):
-            print("hier 5")
             queries.follow(communityid)
             flash('You are now following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
-            # updates likes in database
 
         if request.form.get("unfollow"):
-            print("hier 6")
             queries.unfollow(communityid)
             flash("You are no longer following this community")
             return render_template("community.html",database = images, communityinfo = communityinfo[0], followcheck = followcheck)
-        print("hier 3")
         return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
     else:
-        return render_template("community.html",  database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
 
