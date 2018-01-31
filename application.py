@@ -439,7 +439,7 @@ def images():
     if request.method == "POST":
         if request.form.get("comment"):
             queries.comment(image_path)
-            return redirect(url_for("login"))
+            return redirect(url_for("images"))
 
         print("hier 1")
         # lets user like the image
