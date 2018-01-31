@@ -85,7 +85,7 @@ main td
 
 /* Comment secion image page */
 html, body {
-  background-image: url("bluebackground.jpg");
+
   font-family: "PT Sans", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
