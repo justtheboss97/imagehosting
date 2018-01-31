@@ -43,7 +43,7 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///icarus.db")
 
-# registers user
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
@@ -97,7 +97,7 @@ def register():
 
     return render_template("index.html")
 
-# homepage of site
+
 @app.route("/index", methods=["GET", "POST"])
 def index():
 
@@ -390,6 +390,30 @@ def login():
 
 # image page
 @login_required
+@app.route("/likes", methods=["GET", "POST"])
+def likes():
+
+    if request.method == "GET":
+
+        likjes = db.execute("SELECT image FROM likes WHERE id = :id", id = session["user_id"])
+
+        return render_template("likes.html", likjes = likjes)
+
+    return render_template("likes.html")
+
+@login_required
+@app.route("/comments", methods=["GET", "POST"])
+def comments():
+
+    if request.method == "GET":
+
+        commentjes = db.execute("SELECT comment FROM comment WHERE id = :id", id = session["user_id"])
+
+        return render_template("comments.html", commentjes = commentjes)
+
+    return render_template("comments.html")
+
+@login_required
 @app.route("/images", methods=["GET", "POST"])
 def images():
 
@@ -410,6 +434,7 @@ def images():
         # gets nr of likes for image
         likes = queries.imagelikes()
         print(likes)
+
         # gets all comments for image
         comments = queries.selectcomment()
         return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
@@ -420,9 +445,8 @@ def images():
 
             # update likes in database
             queries.likes(1)
-
             flash('liked')
-            return render_template("community.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
+            return render_template("images.html", comments = comments, image_path=image_path, likechekc = likecheck, likes = likes[0])
 
         # if user has liked already, unlike
         elif request.form['like'] == "unlike":
@@ -431,9 +455,10 @@ def images():
             # updates likes in database
             queries.likes(-1)
             flash("removed from likes")
-            return render_template("community.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
+            return render_template("images.html", comments = comments, image_path=image_path, likecheck = likecheck, likes = likes[0])
 
-# page to look up gifs
+
+
 @login_required
 @app.route("/gifs", methods=["GET", "POST"])
 def gifs():
@@ -459,8 +484,6 @@ def gifs():
         return render_template("loadedgifs.html", gifimages = gifimages)
 
     return render_template("gifs.html")
-
-
 
 
 # logs out user
@@ -493,13 +516,12 @@ def community():
             flash('You are now following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
-        # if user is already following, unfollow the user
-        elif request.form['follow'] == "unfollow":
+        if request.form["follow"] == "unfollow":
             queries.unfollow()
-            flash("You are no longer following this community")
+            flash('You are no longer following this community!')
             return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
 
-        return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
+
 
     else:
         return render_template("community.html", database = images, communityinfo = communityinfo[0], followcheck = followcheck)
