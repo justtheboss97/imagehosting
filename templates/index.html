@@ -7,9 +7,6 @@
 {% block main %}
     <form action="{{ url_for('index') }}" method="post">
         <fieldset>
-            <div class="form-group">
-                <input autocomplete="on" autofocus class="form-control" name="opdracht" placeholder="Enter keywords" type="text"/>
-            </div>
             <div class="row">
               {% for image in database %}
               <div class="column">

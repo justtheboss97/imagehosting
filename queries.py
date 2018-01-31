@@ -155,7 +155,7 @@ def getcommintyid(communitynameglobal):
 
 # gets all comments from user
 def commentje():
-    return db.execute("SELECT comment FROM comment WHERE id = :id", id = session["user_id"])
+    return db.execute("SELECT comment, image FROM comment WHERE id = :id", id = session["user_id"])
 
 # gets all likes from user
 def likje():

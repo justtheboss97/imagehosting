@@ -9,10 +9,18 @@
         <tr style = "background-color: ##CEF6E3; color: #537fbe;">
             <th>Likes</th>
         </tr>
+        {% if not likjes %}
+        <p>You haven't liked anything yet</p>
+        {% else %}
         {% for like in likjes %}
             <tr>
-                <td>{{ likjes.image }}</td>
+                <td>
+                    <form action="{{ url_for('images') }}" method="post" id='imageform' name='{{like.image}}'>
+
+                    <input value='{{ like.image }}' src='{{ like.image }}' name='image_btn' type="image">
+                </td>
             </tr>
         {% endfor %}
+        {% endif %}
     </table>
 {% endblock %}

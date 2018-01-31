@@ -9,15 +9,13 @@
         <tr style = "background-color: ##CEF6E3; color: #537fbe;">
             <th>Comments</th>
         </tr>
-        {% for comment in commentjes %}
-                <td>{{ comment.comment }}</td>
-                <div class="row">
-                    <div class="thumbnail">
-                      <a href="/uploads/<filename>">
-                        <td><img src=" {{ comment.image }}" alt= "pussy" style="width:20%"></td>
-                      </a>
-                    </div>
-                </div>
-        {% endfor %}
-    </table>
+            <div class="row">
+            {% for comment in commentjes %}
+                <tr float = "left">{{ comment.comment }}
+                    <form action="{{ url_for('images') }}" method="post" id='imageform' name='{{comment.image}}'>
+                    <input value='{{ comment.image }}' src='{{ comment.image }}' name='image_btn' type="image"><br>
+                </tr>
+                <br>
+            {% endfor %}
+            </div>
 {% endblock %}

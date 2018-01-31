@@ -400,7 +400,8 @@ def likes():
 
     if request.method == "GET":
 
-        likjes = queries.likje
+        #Query to see if the user has liked anything
+        likjes = queries.likje()
 
         return render_template("likes.html", likjes = likjes)
 
@@ -412,7 +413,9 @@ def comments():
 
     if request.method == "GET":
 
+        #Query to see if the user has comments
         commentjes = queries.commentje()
+
 
         return render_template("comments.html", commentjes = commentjes)
 

@@ -130,6 +130,16 @@ button {
   border: 0;
   text-shadow: 0 1px 2px #fff;
   cursor: pointer;
+
+}
+
+.transparrent{
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
 }
 
 .form-group {
