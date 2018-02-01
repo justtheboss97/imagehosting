@@ -38,3 +38,6 @@ Ali heeft zich vooral bezig gehouden met de technische problemen van de site. Ki
 5. in helpers.py staat de login requiered functie
 6. Icarus.db is onze database
 
+## Product video
+https://youtu.be/Vbg8ec9SnkQ
+
