@@ -19,7 +19,7 @@
     <label for="community upload">Community <span></span></label>
     <select name="community upload" id="community upload" class="form-controll">
     {% for community in result %}
-      <option value="volvo">{{ community.name }}</option>
+      <option value="{{ community.name }}">{{ community.name }}</option>
     {% endfor %}
     </select>
   </div>
